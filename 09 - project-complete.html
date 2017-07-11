@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+		<title>Project Complete</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<!-- Styles -->
+		<style type="text/css">
+			body {
+				margin-left: auto;
+				margin-right: auto;
+				max-width: 40em;
+				width: 88%;
+			}
+
+			.js-accordion .accordion-content {
+				display: none;
+			}
+
+			.accordion-content.active {
+				display: block;
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<p><a class="accordion-toggle" href="#content-1">Show More 1</a></p>
+
+		<div class="accordion-content" id="content-1">
+			<h2>Anchor's Away!</h2>
+
+			<p>Fore furl holystone mutiny lugsail hempen halter Brethren of the Coast Corsair. Loaded to the gunwalls lookout brig hands blow the man down case shot jolly boat hempen halter. Gun gunwalls chase guns furl hornswaggle dance the hempen jig yard hail-shot. Pressgang quarterdeck prow lugger spanker fluke broadside reef.</p>
+
+			<p>Hempen halter me gangplank snow smartly boom fire ship aft. Rope's end draught interloper schooner ho wench jury mast lateen sail. Pillage lanyard nipperkin plunder crack Jennys tea cup hogshead chantey mizzenmast. Spanker blow the man down Buccaneer Sail ho rum tender warp brigantine.</p>
+		</div>
+
+
+
+		<p><a class="accordion-toggle" href="#content-2">Show More 2</a></p>
+
+		<div class="accordion-content" id="content-2">
+			<h2>Man O' War</h2>
+
+			<p>Man-of-war booty brigantine fire ship tack no prey, no pay wherry lee. Reef heave to line chandler fore cable smartly me. Avast list spanker Arr fathom American Main lookout grapple. Jolly boat black spot chandler list chantey pinnace brig Yellow Jack.</p>
+
+			<p>Chantey Davy Jones' Locker snow jib careen galleon Admiral of the Black lass. Rum booty heave to grog hempen halter gangway long clothes wherry. Mutiny chase Sea Legs grapple crow's nest wherry jury mast lateen sail. Hogshead clap of thunder loot port swing the lead run a rig booty Chain Shot.</p>
+		</div>
+
+
+
+		<p><a class="accordion-toggle" href="#content-3">Show More 3</a></p>
+
+		<div class="accordion-content" id="content-3">
+			<h2>Corsair</h2>
+
+			<p>Line Corsair haul wind pink provost hardtack keelhaul hang the jib. Splice the main brace matey hornswaggle strike colors run a shot across the bow cackle fruit hang the jib jack. Sheet bounty wherry nipperkin belay flogging Chain Shot main sheet. Lad Spanish Main barque port smartly Chain Shot deadlights Jack Ketch.</p>
+
+			<p>Flogging heave down sloop me squiffy barkadeer loot chantey. Ye spike port lugsail belaying pin nipperkin loot yardarm. Prow gangplank six pounders chase guns pressgang chandler Shiver me timbers piracy. Hearties Shiver me timbers sloop driver fire in the hole gaff prow gally.</p>
+		</div>
+
+
+		<!-- Scripts -->
+		<script>
+			(function (root, factory) {
+				if ( typeof define === 'function' && define.amd ) {
+					define([], factory(root));
+				} else if ( typeof exports === 'object' ) {
+					module.exports = factory(root);
+				} else {
+					root.accordion = factory(root);
+				}
+			})(typeof global !== 'undefined' ? global : this.window || this.global, function (root) {
+
+				'use strict';
+
+				// .matches() polyfill
+				if (!Element.prototype.matches) {
+					Element.prototype.matches =
+						Element.prototype.matchesSelector ||
+						Element.prototype.mozMatchesSelector ||
+						Element.prototype.msMatchesSelector ||
+						Element.prototype.oMatchesSelector ||
+						Element.prototype.webkitMatchesSelector ||
+						function(s) {
+							var matches = (this.document || this.ownerDocument).querySelectorAll(s),
+								i = matches.length;
+							while (--i >= 0 && matches.item(i) !== this) {}
+							return i > -1;
+						};
+				}
+
+
+				//
+				// Variables
+				//
+
+				var window = root; // Redefine window
+				var publicMethods = {}; // Placeholder for public methods
+				var settings; // Settings placeholder
+
+				// Defaults
+				var defaults = {
+
+					// Selectors
+					selectorToggle: '.accordion-toggle',
+					selectorContent: '.accordion-content',
+					activeClass: 'active',
+					initClass: 'js-accordion',
+
+					// Callbacks
+					callbackBefore: function () {},
+					callbackAfter: function () {}
+
+				};
+
+
+				//
+				// Methods
+				//
+
+				/**
+				 * Merge two or more objects together.
+				 * @param {Boolean}  deep     If true, do a deep (or recursive) merge [optional]
+				 * @param {Object}   objects  The objects to merge together
+				 * @returns {Object}          Merged values of defaults and options
+				 */
+				var extend = function () {
+
+					// Variables
+					var extended = {};
+					var deep = false;
+					var i = 0;
+					var length = arguments.length;
+
+					// Check if a deep merge
+					if ( Object.prototype.toString.call( arguments[0] ) === '[object Boolean]' ) {
+						deep = arguments[0];
+						i++;
+					}
+
+					// Merge the object into the extended object
+					var merge = function ( obj ) {
+						for ( var prop in obj ) {
+							if ( Object.prototype.hasOwnProperty.call( obj, prop ) ) {
+								// If deep merge and property is an object, merge properties
+								if ( deep && Object.prototype.toString.call(obj[prop]) === '[object Object]' ) {
+									extended[prop] = extend( true, extended[prop], obj[prop] );
+								} else {
+									extended[prop] = obj[prop];
+								}
+							}
+						}
+					};
+
+					// Loop through each object and conduct a merge
+					for ( ; i < length; i++ ) {
+						var obj = arguments[i];
+						merge(obj);
+					}
+
+					return extended;
+
+				};
+
+				/**
+				 * Toggle accordion content visibility
+				 * @param  {Node} content  The content to show or hide
+				 */
+				publicMethods.toggleAccordion = function (content) {
+
+					// If the content is already expanded, collapse it and quit
+					if ( content.classList.contains(settings.activeClass) ) {
+						content.classList.remove(settings.activeClass);
+						return;
+					}
+
+					// Get all accordion content, loop through it, and close it
+					var accordions = document.querySelectorAll(settings.selectorContent + '.' + settings.activeClass);
+					for (var i = 0; i < accordions.length; i++) {
+						accordions[i].classList.remove(settings.activeClass);
+					}
+
+					// Open our target content area
+					content.classList.add(settings.activeClass);
+
+				};
+
+				/**
+				 * Function to run on click
+				 * @param  {Event} event The click event
+				 */
+				var clickHandler = function (event) {
+
+					// Bail if our clicked element doesn't have the .accordion-toggle class
+					if ( !event.target.matches(settings.selectorToggle) ) return;
+
+					// Get the target content
+					var content = document.querySelector(event.target.hash);
+					if ( !content ) return;
+
+					// Prevent default link behavior
+					event.preventDefault();
+
+					// Run callback before toggling the accordion
+					settings.callbackBefore(event.target, content);
+
+					// Toggle accordion content visibility
+					publicMethods.toggleAccordion(content);
+
+					// Run callback after toggling the accordion
+					settings.callbackAfter(event.target, content);
+
+				};
+
+				/**
+				 * Destroy our script
+				 */
+				publicMethods.destroy = function () {
+
+					// Check if the script is initialized
+					if (!settings) return;
+
+					// Remove our event listener
+					document.removeEventListener('click', clickHandler, false);
+
+					// Remove our initialization class
+					document.documentElement.classList.remove(settings.initClass);
+
+					// Reset our settings
+					settings = null;
+
+				};
+
+				/**
+				 * Initialize our script
+				 */
+				publicMethods.init = function (options) {
+
+					// Destroy any existing initializations
+					publicMethods.destroy();
+
+					// Merge options into defaults
+					settings = extend(defaults, options || {});
+
+					// Listen for clicks on the document
+					document.addEventListener('click', clickHandler, false);
+
+					// Add an initialization class
+					document.documentElement.className += ' ' + settings.initClass;
+
+				};
+
+
+				//
+				// Return our public methods
+				//
+
+				return publicMethods;
+
+			});
+
+			// Initialize our script
+			accordion.init();
+		</script>
+	</body>
+</html>
