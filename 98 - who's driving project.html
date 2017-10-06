@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+		<title>Vanilla JS Web Apps</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<!-- Styles -->
+		<style type="text/css">
+			body {
+				font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+				font-size: 112.5%;
+				max-width: 40em;
+				width: 88%;
+				margin-left: auto;
+				margin-right: auto;
+			}
+
+			label {
+				display: block;
+				font-weight: bold;
+			}
+
+			.text-small {
+				font-size: 0.7em;
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<div id="app"></div>
+
+
+
+
+		<!-- Scripts -->
+		<script>
+
+			//
+			// Variables
+			//
+
+			// State
+			var state = {
+				time: new Date().toLocaleTimeString(),
+				drivers: [],
+				selected: '',
+				last: '',
+				settings: {}
+			};
+			savedState = localStorage.getItem('whosDriving');
+			state = savedState ? JSON.parse(savedState) : state;
+
+			var templates = {
+
+				layout:
+					'<div id="heading"></div>' +
+					'<div id="drivers"></div>' +
+					'<div id="add-driver"></div>' +
+					'<div id="pick-driver"></div>' +
+					'<div id="selected-driver">',
+
+				heading: '<h1>Who\'s Driving?</h1>',
+
+				drivers: function () {
+					if (!state.drivers.length) return '';
+					var template = '';
+					state.drivers.forEach(function (driver) {
+						template +=
+							'<li>' +
+								driver +
+								(state.last === driver ? ' (<em class="text-small">drove last</em>)' : '') +
+								' <a class="remove-driver text-small" role="button" data-driver="' + driver + '" href="#">[remove driver]</a>' +
+							'</li>';
+					});
+					return '<ul id="drivers-list">' + template + '</ul>';
+				},
+
+				addDriver:
+					'<form id="add-driver-form">' +
+						'<label>Type the name of your driver and hit enter</label>' +
+						'<input type="text" name="new-driver" id="new-driver">' +
+						'<button type="submit">Add Driver</button>' +
+					'</form>',
+
+				pickDriver: '<form id="pick-driver-form"><button id="pick-driver-submit">Pick Who Drives</button></form>',
+
+				selectedDriver: function () {
+					if (!state.selected) return '';
+					return '<p><strong>' + state.selected + '</strong> is driving.</p>';
+				}
+
+			};
+
+
+			//
+			// Methods
+			//
+
+			/**
+			 * Emit a custom event
+			 * @public
+			 * @param {String} eventName  The name of the event to emit
+			 * @param {Object} options    Options for the event
+			 * @param {Node}   elem       The element to dispatch the event on [optional - defaults to window]
+			 */
+			var emitEvent = function (eventName, options, elem) {
+
+				// Setup elem on which to dispatch event
+				elem = elem ? elem : window;
+
+				// Create a new event
+				var event = new CustomEvent(eventName, options);
+
+				// Dispatch the event
+				elem.dispatchEvent(event);
+
+			};
+
+			// Update state with state change event
+			Object.defineProperty(Object.prototype, 'setState', {
+				value: function (prop, key) {
+					if (this === null) {
+						throw new TypeError('Not an object');
+					}
+					if (key) {
+						this[key] = prop;
+					} else {
+						Object.assign(this, prop);
+					}
+					emitEvent('stateChange');
+				},
+				writable: true
+			});
+
+			var bringFocus = function () {
+				if (state.selected) {
+					document.querySelector('#pick-driver-submit').focus();
+					return;
+				}
+				document.querySelector('#new-driver').focus();
+			};
+
+			var saveState = function () {
+				if (state.selected) {
+					state.last = state.selected;
+				}
+				state.selected = '';
+				localStorage.setItem('whosDriving', JSON.stringify(state));
+			};
+
+
+			// Render a template into the DOM
+			var render = function (template, node) {
+				if (!node) return;
+				node.innerHTML = (typeof template === 'function' ? template() : template);
+			};
+
+			// Render all DOM elements
+			var renderDOM = function () {
+				render(templates.layout, document.querySelector('#app'));
+				render(templates.heading, document.querySelector('#heading'));
+				render(templates.drivers, document.querySelector('#drivers'));
+				render(templates.addDriver, document.querySelector('#add-driver'));
+				render(templates.pickDriver, document.querySelector('#pick-driver'));
+				render(templates.selectedDriver, document.querySelector('#selected-driver'));
+				bringFocus();
+				saveState();
+			};
+
+			// Source: https://www.frankmitchell.org/2015/01/fisher-yates/
+			var shuffle = function (array) {
+
+				if (array.length < 1) return '';
+
+				// Create a clone of the array so that we don't shuffle the original one
+				var arr = array.slice(0);
+
+				var i = 0;
+				var j = 0;
+				var temp = null;
+
+				for (i = arr.length - 1; i > 0; i -= 1) {
+					j = Math.floor(Math.random() * (i + 1));
+					temp = arr[i];
+					arr[i] = array[j];
+					arr[j] = temp;
+				}
+
+				return arr[0];
+
+			};
+
+
+			//
+			// Inits & Event Listeners
+			//
+
+			// Render initial DOM
+			renderDOM();
+
+			// Check for state changes and re-render DOM
+			window.addEventListener('stateChange', renderDOM, false);
+
+			// Listen for added drivers
+			window.addEventListener('submit', function (event) {
+
+				if (event.target.matches('#add-driver-form')) {
+					event.preventDefault();
+					var driver = event.target.querySelector('#new-driver').value;
+					if (driver.length > 0) {
+						state.drivers.push(driver);
+					}
+					state.setState(state.drivers, 'drivers');
+					return;
+				}
+
+				if (event.target.matches('#pick-driver-form')) {
+					event.preventDefault();
+					state.setState(shuffle(state.drivers), 'selected');
+				}
+
+			}, false);
+
+			// Listen for clicks
+			window.addEventListener('click', function (event) {
+				if (!event.target.matches('.remove-driver')) return;
+				var driver = state.drivers.indexOf(event.target.getAttribute('data-driver'));
+				state.drivers.splice(driver, 1);
+				state.setState(state.drivers, 'state');
+			}, false);
+
+		</script>
+	</body>
+</html>

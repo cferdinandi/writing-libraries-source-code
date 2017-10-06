@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+		<title>Table of Contents</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<!-- Styles -->
+		<style type="text/css">
+			body {
+				font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+				font-size: 112.5%;
+				max-width: 40em;
+				width: 88%;
+				margin-left: auto;
+				margin-right: auto;
+			}
+
+			 code,
+			 kbd,
+			 pre,
+			 samp {
+			 	border-radius: calc-em(1px);
+				font-family: $font-monospace;
+				font-size: calc-em(14px);
+			}
+
+			code {
+				background-color: lighten( $color-gray-light, 7% );
+				color: $color-code;
+				padding: calc-em(4px);
+				word-wrap: break-word;
+			}
+
+			pre {
+				background-color: lighten( $color-gray-light, 6% );
+				display: block;
+				line-height: 1.5;
+				margin-bottom: $spacing;
+				overflow: auto;
+				padding: calc-em(13px);
+				tab-size: 4;
+				white-space: pre-wrap;
+				word-break: break-all;
+
+				code {
+					background-color: transparent;
+					border: 0;
+					color: inherit;
+					font-size: 1em;
+					padding: 0;
+				}
+			}
+
+			@media screen {
+
+				.token.comment,
+				.token.prolog,
+				.token.doctype,
+				.token.cdata {
+					color: slategray;
+				}
+
+				.token.punctuation {
+					color: #999;
+				}
+
+				.namespace {
+					opacity: .7;
+				}
+
+				.token.property,
+				.token.tag,
+				.token.boolean,
+				.token.number,
+				.token.constant,
+				.token.symbol,
+				.token.deleted {
+					color: #905;
+				}
+
+				.token.selector,
+				.token.attr-name,
+				.token.string,
+				.token.char,
+				.token.builtin,
+				.token.inserted {
+					color: #690;
+				}
+
+				.token.operator,
+				.token.entity,
+				.token.url,
+				.language-css .token.string,
+				.style .token.string {
+					color: #a67f59;
+				}
+
+				.token.atrule,
+				.token.attr-value,
+				.token.keyword {
+					color: #07a;
+				}
+
+				.token.function {
+					color: #dd4a68;
+				}
+
+				.token.regex,
+				.token.important,
+				.token.variable {
+					color: #e90;
+				}
+
+				.token.important,
+				.token.bold {
+					font-weight: bold;
+				}
+				.token.italic {
+					font-style: italic;
+				}
+
+				.token.entity {
+					cursor: help;
+				}
+
+			}
+
+		</style>
+	</head>
+
+	<body>
+
+		<div id="lang-nav"></div>
+
+<pre class="lang-javascript"><code>document.querySelector('#booyah');</code></pre>
+
+<pre class="lang-powershell"><code>$ curl https://api.stripe.com/v1/charges \
+   -u sk_test_BQokikJOvBiI2HlWgH4olfQ2: \
+   -d amount=2000 \
+   -d currency=usd \
+   -d source=tok_visa \
+   -d metadata[order_id]=6735</code></pre>
+
+<pre class="lang-ruby"><code>require "stripe"
+Stripe.api_key = "sk_test_BQokikJOvBiI2HlWgH4olfQ2"
+
+Stripe::Charge.create(
+  :amount => 2000,
+  :currency => "usd",
+  :source => "tok_visa", # obtained with Stripe.js
+  :metadata => {'order_id' => '6735'}
+)</code></pre>
+
+<pre class="lang-python"><code>import stripe
+stripe.api_key = "sk_test_BQokikJOvBiI2HlWgH4olfQ2"
+
+stripe.Charge.create(
+  amount=2000,
+  currency="usd",
+  source="tok_visa", # obtained with Stripe.js
+  metadata={'order_id': '6735'}
+)</code></pre>
+
+<pre class="lang-php"><code>\Stripe\Stripe::setApiKey("sk_test_BQokikJOvBiI2HlWgH4olfQ2");
+
+\Stripe\Charge::create(array(
+  "amount" => 2000,
+  "currency" => "usd",
+  "source" => "tok_visa", // obtained with Stripe.js
+  "metadata" => array("order_id" => "6735")
+));</code></pre>
+
+<pre class="lang-java"><code>Stripe.apiKey = "sk_test_BQokikJOvBiI2HlWgH4olfQ2";
+
+Map&lt;String, Object&gt; chargeParams = new HashMap&lt;String, Object&gt;();
+chargeParams.put("amount", 2000);
+chargeParams.put("currency", "usd");
+chargeParams.put("source", "tok_mastercard");
+// ^ obtained with Stripe.js
+
+Map&lt;String, String> initialMetadata = new HashMap&lt;String, String&gt;();
+initialMetadata.put("order_id", "6735");
+chargeParams.put("metadata", initialMetadata);
+
+charge.create(chargeParams);</code></pre>
+
+
+		<script type="text/javascript" src="prism.js"></script>
+		<script type="text/javascript">
+			/**
+			 * Object.prototype.forEach() polyfill
+			 * https://gomakethings.com/looping-through-objects-with-es6/
+			 * @author Chris Ferdinandi
+			 * @license MIT
+			 */
+			if (!Object.prototype.forEach) {
+				Object.defineProperties(Object.prototype, {
+					'forEach': {
+						value: function (callback) {
+							if (this === null) {
+								throw new TypeError('Not an object');
+							}
+							var obj = this;
+							for (var key in obj) {
+								if (obj.hasOwnProperty(key)) {
+									callback.call(obj, obj[key], key, obj);
+								}
+							}
+						},
+						writable: true
+					}
+				});
+			}
+
+			var langs = {
+				bash: {
+					selector: 'bash',
+					title: 'Bash'
+				},
+				js: {
+					selector: 'javascript, js',
+					title: 'JavaScript',
+				},
+				ruby: {
+					selector: 'ruby',
+					title: 'Ruby'
+				},
+				python: {
+					selector: 'python',
+					title: 'Python'
+				},
+				php: {
+					selector: 'php',
+					title: 'PHP'
+				},
+				java: {
+					selector: 'java',
+					title: 'Java'
+				}
+			};
+
+			var langDefault = 'js';
+
+			var selectors = [];
+
+			langs.forEach(function (lang) {
+				var classes = lang.selector.split(',');
+				classes.forEach(function (className) {
+					selectors.push('pre.lang-' + className.trim());
+					selectors.push('pre.language-' + className.trim());
+				});
+			});
+
+			var createStyles = function () {
+				var ref = document.querySelector('script');
+				var css = document.createElement('style');
+				css.innerHTML =
+					selectors.join(',') + '{display:none;visibility:hidden;}' +
+					selectors.join('.active,') + '.active{display:block;visibility:visible;}';
+				ref.before(css);
+			};
+			createStyles();
+
+			var createLangNav = function () {
+				var list = '';
+				langs.forEach(function (lang, key) {
+					list += '<li><a role="button" data-lang="' + key + '" href="?lang=' + key + '">' + lang.title + '</a></li>';
+				});
+				document.querySelector('#lang-nav').innerHTML = '<ul>' + list + '</ul>';
+			};
+			createLangNav();
+
+			var toggleLang = function (active) {
+				var currentLang = document.querySelectorAll('[class*="lang-"].active, [class*="language-"].active, #lang-nav a.active');
+
+				var classes = langs[active].selector.split(',');
+				var selectors = [];
+				classes.forEach(function (className) {
+					selectors.push('.lang-' + className.trim());
+					selectors.push('.language-' + className.trim());
+				});
+
+				var newLang = document.querySelectorAll(selectors.join(',') + ',#lang-nav [data-lang="' + active + '"]');
+
+				currentLang.forEach(function (lang) {
+					lang.classList.remove('active');
+				});
+
+				newLang.forEach(function (lang) {
+					lang.classList.add('active');
+				});
+			};
+
+			document.addEventListener('click', function (event) {
+				var toggle = event.target.closest('#lang-nav a');
+				if (!toggle) return;
+				event.preventDefault();
+				toggleLang(toggle.getAttribute('data-lang'));
+			}, false);
+
+			toggleLang(langDefault);
+		</script>
+
+	</body>
+</html>

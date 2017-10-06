@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+		<title>Clock</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<!-- Styles -->
+		<style type="text/css">
+			body {
+				font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+				font-size: 112.5%;
+				max-width: 40em;
+				width: 88%;
+				margin-left: auto;
+				margin-right: auto;
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<div id="app"></div>
+
+
+		<!-- Scripts -->
+		<script>
+
+			// Add state to object
+			// var addState = function (obj) {
+			// 	// Update state with state change event
+			// 	Object.defineProperty(obj, 'changeState', {
+			// 		value: function (props) {
+			// 			if (this === null) {
+			// 				throw new TypeError('Not an object');
+			// 			}
+			// 			for (var key in props) {
+			// 				if (props.hasOwnProperty(key)) {
+			// 					obj[key] = props[key];
+			// 				}
+			// 			}
+
+			// 			// State change event
+			// 			var event = new CustomEvent('stateChange', {
+			// 				bubbles: true,
+			// 				detail: {
+			// 					state: obj
+			// 				}
+			// 			});
+			// 			document.dispatchEvent(event);
+
+			// 			return obj;
+			// 		}
+			// 	});
+			// 	return obj;
+			// };
+
+			var addState = function (obj) {
+				// Update state with state change event
+				obj.set = function (props) {
+					if (this === null) {
+						throw new TypeError('Not an object');
+					}
+					for (var key in props) {
+						if (props.hasOwnProperty(key)) {
+							obj[key] = props[key];
+						}
+					}
+					// State change event
+					var event = new CustomEvent('stateChange', {
+						bubbles: true,
+						detail: {
+							state: obj
+						}
+					});
+					document.dispatchEvent(event);
+					return obj;
+				};
+				obj.get = function (key) {
+					return obj[key];
+				};
+				return obj;
+			};
+
+			var render = function (template, node) {
+				if (!node) return;
+				node.innerHTML = (typeof template === 'function' ? template() : template);
+
+				// Render event
+				var event = new CustomEvent('elementRendered', {
+					bubbles: true
+				});
+				node.dispatchEvent(event);
+			};
+
+			var data = addState({
+				greetings: {
+					morning: 'Goodmorning!',
+					evening: 'Good evening!'
+				},
+				time: new Date().toLocaleTimeString('en-US')
+			});
+
+			var getTime = function () {
+				var greeting = /am/i.test(data.time) ? data.greetings.morning : data.greetings.evening;
+				return '<h1>' + greeting + ' The time is ' + data.time + '</h1>';
+			};
+
+			var tick = function () {
+				// data.changeState({time: new Date().toLocaleTimeString('en-US')});
+				data.set({time: new Date().toLocaleTimeString('en-US')});
+			};
+
+			document.addEventListener('stateChange', function () {
+				render(getTime(), document.querySelector('#app'));
+			}, false);
+
+			tick();
+			setInterval(tick, 1000);
+		</script>
+	</body>
+</html>

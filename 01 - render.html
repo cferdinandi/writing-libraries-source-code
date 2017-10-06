@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+		<title>Clock</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<!-- Styles -->
+		<style type="text/css">
+			body {
+				font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+				font-size: 112.5%;
+				max-width: 40em;
+				width: 88%;
+				margin-left: auto;
+				margin-right: auto;
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<div id="app"></div>
+
+
+		<!-- Scripts -->
+		<script>
+			var render = function (template, node) {
+				if (!node) return;
+				node.innerHTML = template;
+			};
+
+			var time = '<h1>The time is ' + new Date().toLocaleTimeString() + '</h1>';
+			render(time, document.querySelector('#app'));
+
+			setInterval(function () {
+				var time = '<h1>The time is ' + new Date().toLocaleTimeString() + '</h1>';
+				render(time, document.querySelector('#app'));
+			}, 1000);
+		</script>
+	</body>
+</html>

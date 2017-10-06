@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+		<title>Vanilla JS Web Apps</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<!-- Styles -->
+		<style type="text/css">
+			body {
+				font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+				font-size: 112.5%;
+				max-width: 40em;
+				width: 88%;
+				margin-left: auto;
+				margin-right: auto;
+			}
+
+			label {
+				display: block;
+				font-weight: bold;
+				margin-bottom: 1em;
+			}
+
+			input {
+				margin-bottom: 1em;
+			}
+
+			.margin-bottom {
+				margin-bottom: 1.5em;
+			}
+
+			.label-no-bold {
+				font-weight: normal;
+			}
+
+			.text-small {
+				font-size: 0.7em;
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<div id="app"></div>
+
+
+		<!-- Scripts -->
+		<script>
+
+			//
+			// Variables
+			//
+
+			// State
+			var appData = {
+				drivers: [],
+				selected: '',
+				last: '',
+				settings: {
+					title: ''
+				},
+				page: null
+			};
+			savedData = localStorage.getItem('whosDriving');
+			appData = savedData ? JSON.parse(savedData) : appData;
+
+			// Routes
+			var routes = {
+				settings: {
+					title: 'Settings | ',
+					url: '?p=settings'
+				},
+				home: {
+					title: '',
+					url: '?p=home'
+				},
+				'': {
+					title: '',
+					url: '?p=home'
+				}
+			};
+
+			// Layout Templates
+			var templates = {
+
+				layout: function () {
+					var template =
+						'<div id="settings-nav"></div>' +
+						'<div id="heading"></div>';
+					if (appData.page === 'settings') {
+						template += '<div id="settings"></div>';
+					} else {
+						template +=
+							'<div id="drivers"></div>' +
+							'<div id="add-driver"></div>' +
+							'<div id="pick-driver"></div>' +
+							'<div id="selected-driver">';
+					}
+					return template;
+				},
+
+				heading: function () {
+					var template = appData.page === 'settings' ? '<h1>Settings</h1>' : '<h1>Who\'s Driving?</h1>';
+					if (appData.page !== 'settings' && appData.settings.title.length > 0) {
+						template += '<p><em>' + appData.settings.title + '<em></p>';
+					}
+					return template;
+				},
+
+				drivers: function () {
+					if (!appData.drivers.length) return '';
+					var template = '';
+					appData.drivers.forEach(function (driver) {
+						template +=
+							'<li>' +
+								driver +
+								(appData.last === driver ? ' <em class="text-small">(drove last)</em>' : '') +
+								' <a class="remove-driver text-small" role="button" data-driver="' + driver + '" href="#">remove</a>' +
+							'</li>';
+					});
+					return '<ul id="drivers-list">' + template + '</ul>';
+				},
+
+				addDriver:
+					'<form id="add-driver-form">' +
+						'<label>Type the name of your driver and hit enter</label>' +
+						'<input type="text" name="new-driver" id="new-driver">' +
+						'<button type="submit">Add Driver</button>' +
+					'</form>',
+
+				pickDriver: '<form id="pick-driver-form"><button id="pick-driver-submit">Pick Who Drives</button></form>',
+
+				selectedDriver: function () {
+					if (!appData.selected) return '';
+					return '<p><strong>' + appData.selected + '</strong> is driving.</p>';
+				},
+
+				settings: function () {
+					var template =
+						'<form id="driver-settings">' +
+							'<label class="label-no-bold">' +
+								'<input type="checkbox" name="remove-all-drivers" id="remove-all-drivers" value="1">' +
+								'Remove all saved drivers' +
+							'</label>' +
+
+							'<div>' +
+								'<label for="trip-title">Trip Title</label>' +
+								'<input type="text" name="trip-title" id="trip-title" value="' + appData.settings.title + '">' +
+							'</div>' +
+
+							'<button type="submit">Save Settings</button>' +
+						'</form>';
+					return template;
+				},
+
+				settingsNav: function () {
+					if (appData.page === 'settings') {
+						return '<p><a class="settings-link" href="?p=home">&larr; Back to the App</a></p>';
+					} else {
+						return '<p><a class="settings-link" href="?p=settings">Settings &rarr;</a></p>';
+					}
+				}
+
+			};
+
+
+			//
+			// Methods
+			//
+
+			/**
+			 * Get the value of a query string from a URL
+			 * @param  {String} field The field to get the value of
+			 * @param  {String} url   The URL to get the value from [optional]
+			 * @return {String}       The value
+			 */
+			var getQueryString = function (field, url) {
+				var href = url ? url : window.location.href;
+				var reg = new RegExp( '[?&]' + field + '=([^&#]*)', 'i' );
+				var string = reg.exec(href);
+				return string ? string[1] : '';
+			};
+
+			var getPage = function (url) {
+				// url = url ? url : window.location.href;
+				var page = getQueryString('p', url);
+				if (!routes[page]) return 404;
+				if (history.pushState && getQueryString('p', window.location.href) !== page) {
+					history.pushState({p: page}, routes[page].title + 'Who\'s Driving', routes[page].url);
+				}
+				document.title = routes[page].title + 'Who\'s Driving';
+				appData.changeState({page: page});
+			};
+
+			// Add state to object
+			var addRoutes = function (obj, key, title) {
+				// Update state with state change event
+				Object.defineProperty(obj, 'getPage', {
+					value: function (url) {
+						var page = getQueryString(key, url);
+						if (!this[page]) return 404;
+						if (history.pushState && getQueryString(key, window.location.href) !== page) {
+							history.pushState({route: page}, this[page].title + title, this[page].url);
+						}
+						document.title = this[page].title + title;
+						appData.changeState({page: page});
+					}
+				});
+				return obj;
+			};
+
+			/**
+			 * Emit a custom event
+			 * @public
+			 * @param {String} eventName  The name of the event to emit
+			 * @param {Object} options    Options for the event
+			 * @param {Node}   elem       The element to dispatch the event on [optional - defaults to window]
+			 */
+			var emitEvent = function (eventName, options, elem) {
+
+				// Setup elem on which to dispatch event
+				elem = elem ? elem : window;
+
+				// Create a new event
+				var event = new CustomEvent(eventName, options);
+
+				// Dispatch the event
+				elem.dispatchEvent(event);
+
+			};
+
+			// Source: https://www.frankmitchell.org/2015/01/fisher-yates/
+			var shuffle = function (array) {
+
+				if (array.length < 1) return '';
+
+				// Create a clone of the array so that we don't shuffle the original one
+				var arr = array.slice(0);
+
+				var i = 0;
+				var j = 0;
+				var temp = null;
+
+				for (i = arr.length - 1; i > 0; i -= 1) {
+					j = Math.floor(Math.random() * (i + 1));
+					temp = arr[i];
+					arr[i] = array[j];
+					arr[j] = temp;
+				}
+
+				return arr[0];
+
+			};
+
+			// Add state to object
+			var addState = function (obj) {
+				// Update state with state change event
+				obj.set = function (props) {
+					if (this === null) {
+						throw new TypeError('Not an object');
+					}
+					for (var key in props) {
+						if (props.hasOwnProperty(key)) {
+							obj[key] = props[key];
+						}
+					}
+					emitEvent('stateChange', {
+						bubbles: true,
+						detail: {
+							state: obj
+						}
+					}, document);
+					return obj;
+				};
+				// Object.defineProperty(obj, 'changeState', {
+				// 	value: function (props) {
+				// 		if (this === null) {
+				// 			throw new TypeError('Not an object');
+				// 		}
+				// 		for (var key in props) {
+				// 			if (props.hasOwnProperty(key)) {
+				// 				obj[key] = props[key];
+				// 			}
+				// 		}
+				// 		emitEvent('stateChange', {
+				// 			bubbles: true,
+				// 			detail: {
+				// 				state: obj
+				// 			}
+				// 		}, document);
+				// 		return obj;
+				// 	}
+				// });
+				return obj;
+			};
+
+			var bringFocus = function () {
+				if (appData.selected) {
+					document.querySelector('#pick-driver-submit').focus();
+					return;
+				}
+				document.querySelector('#new-driver').focus();
+			};
+
+			var saveState = function () {
+				if (appData.selected) {
+					appData.last = appData.selected;
+				}
+				appData.selected = '';
+				localStorage.setItem('whosDriving', JSON.stringify(appData));
+			};
+
+
+			// Render a template into the DOM
+			var render = function (template, node) {
+				if (!node) return;
+				node.innerHTML = (typeof template === 'function' ? template() : template);
+				emitEvent('elementRendered', {
+					bubbles: true
+				}, node);
+				return node;
+			};
+
+			// Render all DOM elements
+			var renderDOM = function () {
+				render(templates.layout, document.querySelector('#app'));
+				render(templates.heading, document.querySelector('#heading'));
+				render(templates.settingsNav, document.querySelector('#settings-nav'));
+				if (appData.page === 'settings') {
+					render(templates.settings, document.querySelector('#settings'));
+				} else {
+					render(templates.drivers, document.querySelector('#drivers'));
+					render(templates.addDriver, document.querySelector('#add-driver'));
+					render(templates.pickDriver, document.querySelector('#pick-driver'));
+					render(templates.selectedDriver, document.querySelector('#selected-driver'));
+					bringFocus();
+				}
+				saveState();
+			};
+
+
+			//
+			// Inits & Event Listeners
+			//
+
+			// Add state to our data
+			addState(appData);
+
+			// Setup our routes
+			addRoutes(routes, 'p', 'Who\'s Driving?');
+
+			// Check for state changes and re-render DOM
+			window.addEventListener('stateChange', renderDOM, false);
+
+			// Listen for added drivers
+			window.addEventListener('submit', function (event) {
+
+				if (event.target.matches('#add-driver-form')) {
+					event.preventDefault();
+					var driver = event.target.querySelector('#new-driver').value;
+					if (driver.length > 0) {
+						appData.drivers.push(driver);
+					}
+					appData.changeState({drivers: appData.drivers});
+					return;
+				}
+
+				if (event.target.matches('#pick-driver-form')) {
+					event.preventDefault();
+					appData.changeState({selected: shuffle(appData.drivers)});
+					return;
+				}
+
+				if (event.target.matches('#driver-settings')) {
+					event.preventDefault();
+					appData.settings = {
+						title: document.querySelector('#trip-title').value
+					};
+					if (document.querySelector('#remove-all-drivers').checked) {
+						appData.drivers = [];
+					}
+					getPage('?p=home');
+				}
+
+			}, false);
+
+			// Listen for clicks
+			window.addEventListener('click', function (event) {
+				if (event.target.matches('.remove-driver')) {
+					event.preventDefault();
+					var driver = appData.drivers.indexOf(event.target.getAttribute('data-driver'));
+					appData.drivers.splice(driver, 1);
+					appData.changeState({drivers: appData.drivers});
+					return;
+				}
+
+				if (event.target.matches('a')) {
+					event.preventDefault();
+					routes.getPage(event.target.getAttribute('href'));
+				}
+			}, false);
+
+			// Listen for popstate
+			window.addEventListener('popstate', function () {
+				// appData.changeState({page: getPage()});
+				routes.getPage();
+			}, false);
+
+			// Render initial DOM
+			routes.getPage();
+
+		</script>
+	</body>
+</html>

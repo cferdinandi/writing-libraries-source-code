@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+		<title>Vanilla JS Web Apps</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<!-- Styles -->
+		<style type="text/css">
+			body {
+				max-width: 40em;
+				width: 88%;
+				margin-left: auto;
+				margin-right: auto;
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<div id="app">
+
+		</div>
+
+
+		<!-- Scripts -->
+		<script>
+
+			//
+			// Variables
+			//
+
+			// State
+			var state = {
+				time: new Date().toLocaleTimeString()
+			};
+
+
+			//
+			// Methods
+			//
+
+			/**
+			 * Emit a custom event
+			 * @public
+			 * @param {String} eventName  The name of the event to emit
+			 * @param {Object} options    Options for the event
+			 * @param {Node}   elem       The element to dispatch the event on [optional - defaults to window]
+			 */
+			var emitEvent = function (eventName, options, elem) {
+
+				// Setup elem on which to dispatch event
+				elem = elem ? elem : window;
+
+				// Create a new event
+				var event = new CustomEvent(eventName, options);
+
+				// Dispatch the event
+				elem.dispatchEvent(event);
+
+			};
+
+			// Update state with state change event
+			Object.defineProperty(Object.prototype, 'setState', {
+				value: function (prop, key) {
+					if (this === null) {
+						throw new TypeError('Not an object');
+					}
+					if (key) {
+						this[key] = prop;
+					} else {
+						Object.assign(this, prop);
+					}
+					emitEvent('stateChange');
+				},
+				writable: true
+			});
+
+
+			// Render a template into the DOM
+			var render = function (template, node) {
+				if (!node) return;
+				node.innerHTML = (typeof template === 'function' ? template() : template);
+			};
+
+			var renderIntro = function () {
+				return '<h1>The time is ' + state.time + '</h1>';
+			};
+
+			// Render all DOM elements
+			var renderDOM = function () {
+				render(renderIntro, document.querySelector('#app'));
+			};
+
+
+			//
+			// Inits & Event Listeners
+			//
+
+			// Render initial DOM
+			renderDOM();
+
+			// Check for state changes and re-render DOM
+			window.addEventListener('stateChange', renderDOM, false);
+
+			// Update state every second
+			window.setInterval(function () {
+				state.setState(new Date().toLocaleTimeString(), 'time');
+			}, 1000);
+
+		</script>
+	</body>
+</html>

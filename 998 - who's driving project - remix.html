@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+		<title>Vanilla JS Web Apps</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<!-- Styles -->
+		<style type="text/css">
+			body {
+				font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+				font-size: 112.5%;
+				max-width: 40em;
+				width: 88%;
+				margin-left: auto;
+				margin-right: auto;
+			}
+
+			label {
+				display: block;
+				font-weight: bold;
+			}
+
+			.text-small {
+				font-size: 0.7em;
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<div id="app"></div>
+
+
+		<!-- Scripts -->
+		<script>
+
+			//
+			// Methods
+			//
+
+			var render = function (template, elem) {
+
+				// If elem is an element, use it.
+				// If it's a selector, get it.
+				elem = typeof elem === 'string' ? document.querySelector(elem) : elem;
+
+				// Render template into elem.
+				// If it's a function, run it.
+				// If it's a string, use as is.
+				elem.innerHTML = (typeof template === 'function' ? template(elem) : template);
+
+				// Dispatch a render event
+				var event = new CustomEvent('render', {
+					bubbles: true
+				});
+				elem.dispatchEvent(event);
+
+				// Return the elem for use elsewhere
+				return elem;
+
+			};
+
+			var component = function (template, props, elem) {
+
+				// If elem is an element, use it.
+				// If it's a selector, get it.
+				elem = Object.prototype.toString.call(elem) === '[object HTMLElement]' ? elem : document.querySelector(elem);
+
+				Object.defineProperties(elem, {
+					state: {
+						value: props,
+						writable: true
+					},
+					setState: {
+						value: function (props) {
+
+							// Shallow merge new properties into state object
+							for (var key in props) {
+								if (props.hasOwnProperty(key)) {
+									elem.state[key] = props[key];
+								}
+							}
+
+							// Render the element
+							render(template, elem);
+
+							// Return the elem for use elsewhere
+							return elem;
+
+						}
+					}
+				});
+
+				// Return the elem for use elsewhere
+				return elem;
+
+			};
+
+			var list = function (elem) {
+				var template = '';
+				elem.state.drivers.forEach(function (driver) {
+					template += '<li>' + driver + '</li>';
+				});
+				return '<ul>' + template + '</ul>';
+			};
+
+			var drivers = component(list, {
+				drivers: [
+					'Gary',
+					'Jim',
+					'Kyle'
+				]
+			}, '#app');
+			render(list, drivers);
+
+
+		</script>
+	</body>
+</html>
