@@ -44,6 +44,23 @@ Change `root.myPlugin` to whatever namespace you’d like to use for your plugin
 
 ```js
 // Examples
+myPlugin.doSomething();
+myPlugin.init();
+
+// Example with options
+myPlugin.init({
+    mayo: true,
+    bread: 'rye',
+});
+```
+
+
+## Constructors
+
+If you want to be able to run multiple instances of your plugin at the same time, use a constructor with your *revealing module pattern* or *UMD*.
+
+```js
+// Examples
 var plugin = myPlugin('.selector');
 plugin.doSomething();
 
