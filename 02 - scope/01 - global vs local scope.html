@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+		<title>Global vs. Local Scrope</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<!-- Styles -->
+		<style type="text/css">
+			body {
+				max-width: 40em;
+				width: 88%;
+				margin-left: auto;
+				margin-right: auto;
+			}
+		</style>
+	</head>
+
+	<body>
+
+
+		<script>
+			// this is in the global scope
+			var sandwich = 'tuna';
+
+			var logSandwich = function () {
+
+				// This is in the local scope
+				var topping = 'tomato';
+
+				// Will log "tuna" in the console
+				// It can access sandwich because it's in the global scope
+				console.log(sandwich);
+
+				// Will log "tomato" in the console
+				// It can also access topping because it shares the same local scope
+				console.log(topping);
+
+			};
+			logSandwich();
+
+			// Will also log `tuna` in the console
+			console.log(sandwich);
+
+			// returns "Uncaught ReferenceError: topping is not defined"
+			// `topping` is local to the logSandwich() function, and not accessible here
+			console.log(topping);
+		</script>
+	</body>
+</html>

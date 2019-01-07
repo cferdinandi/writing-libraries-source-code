@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+		<title>Project Template</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<!-- Styles -->
+		<style type="text/css">
+			body {
+				margin-left: auto;
+				margin-right: auto;
+				max-width: 40em;
+				width: 88%;
+			}
+
+			label {
+				font-weight: bold;
+			}
+
+			input,
+			textarea {
+				margin-bottom: 2em;
+				width: 100%;
+			}
+
+			textarea {
+				height: 12em;
+			}
+
+			/**
+			 * Simple Grid
+			 * https://gridbyexample.com/examples/example37/
+			 */
+
+			@media (min-width: 40em) {
+				.grid {
+					display: grid;
+					grid-gap: 2em;
+					grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+				}
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<h1>Type Preview</h1>
+
+		<div class="grid">
+			<div>
+				<label for="content">Content</label>
+				<textarea id="content" data-mirror="#preview-content"></textarea>
+			</div>
+			<div>
+				<strong>Preview</strong>
+				<div id="preview-content"></div>
+			</div>
+		</div>
+
+		<div class="grid">
+			<div>
+				<label for="author">Author Name</label>
+				<input type="text" id="author" data-mirror="#preview-author">
+			</div>
+			<div>
+				<br>
+				<em id="preview-author"></em>
+			</div>
+		</div>
+
+
+		<!-- Scripts -->
+		<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+		<script>
+			/**
+			 * Element.matches() polyfill (simple version)
+			 * https://developer.mozilla.org/en-US/docs/Web/API/Element/matches#Polyfill
+			 */
+			if (!Element.prototype.matches) {
+				Element.prototype.matches = Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
+			}
+
+			var Mirror = (function () {
+
+				'use strict';
+
+				//
+				// Variables
+				//
+
+				// Default settings
+				var defaults = {
+					attribute: 'data-mirror',
+					addBreaks: true,
+					callback: function (content) {
+						return content;
+					}
+				};
+
+				/**
+				 * Setup the constructor
+				 * @param  {Object} options User options
+				 */
+				var Constructor = function (selector, options) {
+
+					//
+					// Variables
+					//
+
+					var publicAPIs = {};
+					var settings;
+
+
+					//
+					// Methods
+					//
+
+					/**
+					 * Render the field content into the DOM
+					 * @param  {String} content the content
+					 */
+					var renderContent = function (content, mirror) {
+
+						// Replace line breaks with <br> elements
+						if (settings.addBreaks) {
+							content = content.replace(/\r?\n/g, '<br>');
+						}
+
+						// Mirror the content
+						mirror.innerHTML = settings.callback(content);
+
+					};
+
+					/**
+					 * Handle input events
+					 */
+					var handleInputs = function (event) {
+
+						// Check that changed input is a mirror input
+						if (!event.target.matches(selector)) return;
+
+						// Get element to mirror into
+						var target = event.target.getAttribute(settings.attribute);
+						var mirror = document.querySelector(target);
+						if (!target) return;
+
+						// Render the content into the DOM
+						renderContent(event.target.value, mirror);
+
+					};
+
+					/**
+					 * Destroy the current initialization
+					 */
+					publicAPIs.destroy = function () {
+
+						// Make sure the plugin is initialized before trying to destroy
+						if (!settings) return;
+
+						// Remove the event listener
+						document.removeEventListener('input', handleInputs, false);
+
+						// Reset variables
+						settings = null;
+
+					};
+
+					/**
+					 * Initialize the plugin
+					 * @param  {Object} options User options
+					 */
+					publicAPIs.init = function (options) {
+
+						// Destroy any existing initialization
+						publicAPIs.destroy();
+
+						// Merge user options into defaults
+						settings = Object.assign({}, defaults, options);
+
+						// Listen for changes to inputs and text areas
+						document.addEventListener('input', handleInputs, false);
+
+					};
+
+
+					//
+					// Initialize the plugin
+					//
+
+					publicAPIs.init(options);
+
+
+					//
+					// Return Public APIs
+					//
+
+					return publicAPIs;
+
+				};
+
+
+				//
+				// Return the Constructor
+				//
+
+				return Constructor;
+
+			})();
+
+			// Mirror content
+			// Parse with markdown first
+			var mirrorContent = new Mirror('#content', {
+				addBreaks: false,
+				callback: function (content) {
+					return marked(content);
+				}
+			});
+
+			// Mirror author info
+			// Prefix with "By "
+			var mirrorAuthor = new Mirror('#author', {
+				addBreaks: false,
+				callback: function (content) {
+					// If a value was supplied, add `By ` to the beginning of it
+					if (content.length > 0) return 'By ' + content;
+					return '';
+				}
+			});
+		</script>
+	</body>
+</html>

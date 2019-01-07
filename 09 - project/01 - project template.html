@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+		<title>Project Template</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<!-- Styles -->
+		<style type="text/css">
+			body {
+				margin-left: auto;
+				margin-right: auto;
+				max-width: 40em;
+				width: 88%;
+			}
+
+			label {
+				font-weight: bold;
+			}
+
+			input,
+			textarea {
+				margin-bottom: 2em;
+				width: 100%;
+			}
+
+			textarea {
+				height: 12em;
+			}
+
+			/**
+			 * Simple Grid
+			 * https://gridbyexample.com/examples/example37/
+			 */
+
+			@media (min-width: 40em) {
+				.grid {
+					display: grid;
+					grid-gap: 2em;
+					grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+				}
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<h1>Type Preview</h1>
+
+		<div class="grid">
+			<div>
+				<label for="content">Content</label>
+				<textarea id="content" data-mirror="#preview-content"></textarea>
+			</div>
+			<div>
+				<strong>Preview</strong>
+				<div id="preview-content"></div>
+			</div>
+		</div>
+
+
+		<!-- Scripts -->
+		<script>
+			/**
+			 * Element.matches() polyfill (simple version)
+			 * https://developer.mozilla.org/en-US/docs/Web/API/Element/matches#Polyfill
+			 */
+			if (!Element.prototype.matches) {
+				Element.prototype.matches = Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
+			}
+
+			// Listen for changes to inputs and text areas
+			document.addEventListener('input', function (event) {
+
+				// Check that changed input is a mirror input
+				if (!event.target.matches('[data-mirror]')) return;
+
+				// Get element to mirror into
+				var target = event.target.getAttribute('data-mirror');
+				var mirror = document.querySelector(target);
+				if (!target) return;
+
+				// Mirror the content
+				// Replace line breaks with <br> elements
+				mirror.innerHTML = event.target.value.replace(/\r?\n/g, '<br>');
+
+			}, false);
+		</script>
+	</body>
+</html>
