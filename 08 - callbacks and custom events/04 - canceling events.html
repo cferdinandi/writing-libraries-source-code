@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+		<title>Canceling Events</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	</head>
+
+	<body>
+
+
+		<script>
+			document.addEventListener('my-custom-event', function (event) {
+				console.log('The event was emitted');
+				event.preventDefault();
+			});
+
+			function sayHi () {
+
+				// Create the event
+				var event = new CustomEvent('my-custom-event', {
+					bubbles: true,
+					cancelable: true,
+					detail: 'This is awesome. I could also be an object or array.'
+				});
+
+				// Emit the event
+				let canceled = !document.dispatchEvent(event);
+
+				// If cancelled, end the function
+				if (canceled) return;
+
+				// Otherwise, alert a message
+				alert('Hi there!');
+
+			}
+
+			sayHi();
+		</script>
+	</body>
+</html>

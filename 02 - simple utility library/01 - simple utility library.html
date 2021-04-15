@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+		<title>Simple Utility Library</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	</head>
+
+	<body>
+
+
+		<script>
+			let greetings = {
+
+				/**
+				 * Say hello
+				 * @param  {String} name The person's name
+				 */
+				sayHi: function (name) {
+					alert(`Hello, ${name}!`);
+				},
+
+				/**
+				 * Say goodbye
+				 * @param  {String} name The person's name
+				 */
+				sayBye: function (name) {
+					alert(`Goodbye, ${name}. See you soon!`);
+				}
+
+			};
+
+			greetings.sayHi('Merlin');
+			greetings.sayBye('Morgana');
+		</script>
+	</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+		<title>Options & Settings</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	</head>
+
+	<body>
+
+
+		<script>
+			let Greetings = (function () {
+
+				// Default greeting
+				let greeting = 'you';
+
+				/**
+				 * The Constructor object
+				 * @param {String} name     The name to use for the greeting
+				 * @param {Object} settings The settings and options for this instance
+				 */
+				function Constructor (name, settings) {
+					this.name = name ? name : greeting;
+					this.settings = settings;
+				}
+
+				/**
+				 * Say hello
+				 */
+				Constructor.prototype.sayHi = function () {
+					alert(`${this.settings.hiBefore}, ${this.name}! ${this.settings.hiAfter}`);
+					return this;
+				};
+
+				/**
+				 * Say goodbye
+				 */
+				Constructor.prototype.sayBye = function () {
+					alert(`${this.settings.byeBefore}, ${this.name}. ${this.settings.byeAfter}`);
+					return this;
+				};
+
+				// Export the constructor object
+				return Constructor;
+
+			})();
+
+			let merlin = new Greetings('Merlin', {
+				hiBefore: 'Heyo',
+				hiAfter: '',
+				byeBefore: 'See ya later',
+				byeAfter: 'Take it easy.'
+			});
+
+			// Merlin
+			merlin.sayHi();
+			merlin.sayBye();
+
+
+			// Incomplete settings
+			let morgana = new Greetings('Morgana', {
+				hiBefore: 'Hi there'
+			});
+			morgana.sayHi();
+
+			// No settings
+			let arthur = new Greetings('Arthur');
+			arthur.sayHi();
+		</script>
+	</body>
+</html>

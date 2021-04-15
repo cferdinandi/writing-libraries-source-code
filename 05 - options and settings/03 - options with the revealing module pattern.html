@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+		<title>Options with the Revealing Module Pattern</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	</head>
+
+	<body>
+
+
+		<script>
+			let greetings = (function () {
+
+				// Default settings
+				let settings = {
+					greeting: 'you',
+					hiBefore: 'Hello',
+					hiAfter: '',
+					byeBefore: 'Goodbye',
+					byeAfter: 'See you soon!'
+				};
+
+				/**
+				 * Update the settings with user options
+				 * @param  {Object} options The user options
+				 */
+				function updateSettings (options = {}) {
+					Object.assign(settings, options);
+				}
+
+				/**
+				 * Say hello
+				 * @param  {String} name The person's name
+				 */
+				function sayHi (name) {
+					alert(`${settings.hiBefore}, ${name ? name : settings.greeting}! ${settings.hiAfter}`);
+				}
+
+				/**
+				 * Say goodbye
+				 * @param  {String} name The person's name
+				 */
+				function sayBye (name) {
+					alert(`${settings.byeBefore}, ${name ? name : settings.greeting}. ${settings.byeAfter}`);
+				}
+
+				// Export public methods
+				return {sayHi, sayBye, updateSettings};
+
+			})();
+
+			// Update the settings
+			// These will apply to every use
+			greetings.updateSettings({
+				hiBefore: 'Heyo'
+			});
+
+			greetings.sayHi('Merlin');
+			greetings.sayHi('Morgana');
+		</script>
+	</body>
+</html>

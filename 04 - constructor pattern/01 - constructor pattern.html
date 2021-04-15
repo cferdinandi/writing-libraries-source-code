@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+		<title>Constructor Pattern</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	</head>
+
+	<body>
+
+
+		<script>
+			let Greetings = (function () {
+
+				// Default greeting
+				let greeting = 'you';
+
+				/**
+				 * The Constructor object
+				 * @param {String} name The name to use for the greeting
+				 */
+				function Constructor (name) {
+					this.name = name ? name : greeting;
+				}
+
+				/**
+				 * Say hello
+				 */
+				function sayHi (name) {
+					alert(`Hello, ${name ? name : greeting}!`);
+				}
+
+				/**
+				 * Say goodbye
+				 */
+				function sayBye () {
+					alert(`Goodbye, ${name ? name : greeting}. See you soon!`);
+				}
+
+				// Export the constructor object
+				return Constructor;
+
+			})();
+
+			let merlin = new Greetings('Merlin');
+			let morgana = new Greetings('Morgana');
+			let nameless = new Greetings();
+
+			// Instance properties
+			console.log(merlin.name);
+			console.log(morgana.name);
+			console.log(nameless.name);
+		</script>
+	</body>
+</html>

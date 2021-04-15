@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+		<title>Underscore Prefix</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	</head>
+
+	<body>
+
+
+		<script>
+			let Greetings = (function () {
+
+				// Default settings
+				let defaults = {
+					greeting: 'you',
+					hiBefore: 'Hello',
+					hiAfter: '',
+					byeBefore: 'Goodbye',
+					byeAfter: 'See you soon!'
+				};
+
+				/**
+				 * The Constructor object
+				 * @param {String} name    The name to use for the greeting
+				 * @param {Object} options The settings and options for this instance
+				 */
+				function Constructor (name, options = {}) {
+					let settings = Object.assign({}, defaults, options);
+					this._name = name ? name : settings.greeting;
+					this._settings = settings;
+				}
+
+				/**
+				 * Say hello
+				 */
+				Constructor.prototype.sayHi = function () {
+					alert(`${this._settings.hiBefore}, ${this._name}! ${this._settings.hiAfter}`);
+					return this;
+				};
+
+				/**
+				 * Say goodbye
+				 */
+				Constructor.prototype.sayBye = function () {
+					alert(`${this._settings.byeBefore}, ${this._name}. ${this._settings.byeAfter}`);
+					return this;
+				};
+
+				// Export the constructor object
+				return Constructor;
+
+			})();
+
+			let merlin = new Greetings('Merlin');
+
+			merlin._name = 'Morgana';
+			merlin.sayHi();
+		</script>
+	</body>
+</html>

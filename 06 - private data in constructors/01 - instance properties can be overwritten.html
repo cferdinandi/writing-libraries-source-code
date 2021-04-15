@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+		<title>Instance properties can be overwritten</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	</head>
+
+	<body>
+
+
+		<script>
+			let Greetings = (function () {
+
+				// Default settings
+				let defaults = {
+					greeting: 'you',
+					hiBefore: 'Hello',
+					hiAfter: '',
+					byeBefore: 'Goodbye',
+					byeAfter: 'See you soon!'
+				};
+
+				/**
+				 * The Constructor object
+				 * @param {String} name    The name to use for the greeting
+				 * @param {Object} options The settings and options for this instance
+				 */
+				function Constructor (name, options = {}) {
+					let settings = Object.assign({}, defaults, options);
+					this.name = name ? name : settings.greeting;
+					this.settings = settings;
+				}
+
+				/**
+				 * Say hello
+				 */
+				Constructor.prototype.sayHi = function () {
+					alert(`${this.settings.hiBefore}, ${this.name}! ${this.settings.hiAfter}`);
+					return this;
+				};
+
+				/**
+				 * Say goodbye
+				 */
+				Constructor.prototype.sayBye = function () {
+					alert(`${this.settings.byeBefore}, ${this.name}. ${this.settings.byeAfter}`);
+					return this;
+				};
+
+				// Export the constructor object
+				return Constructor;
+
+			})();
+
+			let merlin = new Greetings('Merlin');
+
+			console.log(merlin.name);
+			console.log(merlin.settings);
+
+			// Replaces "Merlin" with "Morgana"
+			merlin.name = 'Morgana';
+			merlin.sayHi();
+
+			// Replaces the settings object with a string
+			merlin.settings = 'Ruined your library';
+			merlin.sayHi();
+		</script>
+	</body>
+</html>

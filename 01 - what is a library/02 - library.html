@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+		<title>Library</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	</head>
+
+	<body>
+
+
+		<script>
+			// This is a super simple library
+			function sendToAPI (endpoint, params = {}, useJSON = false) {
+				return fetch(endpoint, {
+					method: 'POST',
+					body: useJSON ? JSON.stringify(params) : new URLSearchParams(params).toString(),
+					headers: {
+						'Content-type': useJSON ? 'application/json; charset=UTF-8' : 'application/x-www-form-urlencoded'
+					}
+				}).then(function (response) {
+					if (response.ok) {
+						return response.json();
+					}
+					throw response.statusText;
+				}).then(function (data) {
+					return data;
+				}).catch(function (error) {
+					return error;
+				});
+			}
+
+			// You might use it like this
+			sendToAPI('https://jsonplaceholder.typicode.com/posts', {
+				title: 'Going to the beach',
+				body: 'We can swim, read, and enjoy the nice weather.',
+				userId: 1
+			}, true).then(function (data) {
+				console.log(data);
+			});
+		</script>
+	</body>
+</html>

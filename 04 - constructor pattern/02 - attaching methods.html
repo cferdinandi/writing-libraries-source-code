@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+		<title>Adding Methods</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	</head>
+
+	<body>
+
+
+		<script>
+			let Greetings = (function () {
+
+				// Default greeting
+				let greeting = 'you';
+
+				/**
+				 * The Constructor object
+				 * @param {String} name The name to use for the greeting
+				 */
+				function Constructor (name) {
+					this.name = name ? name : greeting;
+				}
+
+				/**
+				 * Say hello
+				 */
+				Constructor.prototype.sayHi = function () {
+					alert(`Hello, ${this.name}!`);
+				};
+
+				/**
+				 * Say goodbye
+				 */
+				Constructor.prototype.sayBye = function () {
+					alert(`Goodbye, ${this.name}. See you soon!`);
+				};
+
+				// Export the constructor object
+				return Constructor;
+
+			})();
+
+			let merlin = new Greetings('Merlin');
+			merlin.sayHi();
+		</script>
+	</body>
+</html>

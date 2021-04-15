@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+		<title>Revealing Module Pattern</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	</head>
+
+	<body>
+
+
+		<script>
+			let greetings = (function () {
+
+				// Default greeting
+				let greeting = 'you';
+
+				/**
+				 * Say hello
+				 * @param  {String} name The person's name
+				 */
+				function sayHi (name) {
+					alert(`Hello, ${name ? name : greeting}!`);
+				}
+
+				/**
+				 * Say goodbye
+				 * @param  {String} name The person's name
+				 */
+				function sayBye (name) {
+					alert(`Goodbye, ${name ? name : greeting}. See you soon!`);
+				}
+
+				// Export public methods
+				return {sayHi, sayBye};
+
+			})();
+
+			greetings.sayHi('Merlin');
+			greetings.sayBye();
+
+			console.log(greetings.greeting);
+		</script>
+	</body>
+</html>

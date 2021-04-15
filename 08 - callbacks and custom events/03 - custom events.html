@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+		<title>Custom Events</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	</head>
+
+	<body>
+
+
+		<script>
+			document.addEventListener('my-custom-event', function (event) {
+				console.log(event.detail);
+			});
+
+			// Create the event
+			var event = new CustomEvent('my-custom-event', {
+				bubbles: true,
+				cancelable: true,
+				detail: 'This is awesome. I could also be an object or array.'
+			});
+
+			// Emit the event
+			document.dispatchEvent(event);
+		</script>
+	</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+		<title>Private variables won't work</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	</head>
+
+	<body>
+
+
+		<script>
+			let Greetings = (function () {
+
+				// Default settings
+				let defaults = {
+					greeting: 'you',
+					hiBefore: 'Hello',
+					hiAfter: '',
+					byeBefore: 'Goodbye',
+					byeAfter: 'See you soon!'
+				};
+
+				// Hold the name and settings data
+				let name, settings;
+
+				/**
+				 * The Constructor object
+				 * @param {String} name    The name to use for the greeting
+				 * @param {Object} options The settings and options for this instance
+				 */
+				function Constructor (nameStr, options = {}) {
+					settings = Object.assign({}, defaults, options);
+					name = nameStr ? nameStr : settings.greeting;
+				}
+
+				/**
+				 * Say hello
+				 */
+				Constructor.prototype.sayHi = function () {
+					alert(`${settings.hiBefore}, ${name}! ${settings.hiAfter}`);
+					return this;
+				};
+
+				/**
+				 * Say goodbye
+				 */
+				Constructor.prototype.sayBye = function () {
+					alert(`${settings.byeBefore}, ${name}. ${settings.byeAfter}`);
+					return this;
+				};
+
+				// Export the constructor object
+				return Constructor;
+
+			})();
+
+			let merlin = new Greetings('Merlin');
+			// merlin.sayHi();
+
+
+			let morgana = new Greetings('Morgana', {
+				hiBefore: 'Heyo'
+			});
+
+			morgana.sayHi();
+			merlin.sayHi();
+		</script>
+	</body>
+</html>

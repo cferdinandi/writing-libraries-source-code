@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+		<title>Destroying an Insantiation</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<style type="text/css">
+			body {
+				margin: 0 auto;
+				max-width: 30em;
+				width: 88%;
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<h1>egg.js</h1>
+
+		<div id="egg"></div>
+
+
+		<script>
+			let Egg = (function () {
+
+				// Default settings
+				let defaults = {
+					label: 'click me',
+					btnText: '🥚',
+					transition: 'transform 300ms ease-in',
+					scale: '2'
+				};
+
+				/**
+				 * Inject the button into the DOM
+				 * @param  {Node}   elem     The element to render the button into
+				 * @param  {Object} settings The settings for this instance
+				 * @return {Node}            The button
+				 */
+				function createBtn (elem, settings) {
+
+					// Create button
+					let btn = document.createElement('button');
+					btn.innerHTML = settings.btnText;
+					if (settings.label) {
+						btn.setAttribute('aria-label', settings.label);
+					}
+					if (settings.transition) {
+						btn.style.transition = settings.transition;
+					}
+
+					// Inject into the DOM
+					elem.append(btn);
+
+					return btn;
+
+				}
+
+				/**
+				 * Toggle the button
+				 * @param  {Constructor} instance The current instantiation
+				 */
+				function toggleBtn (instance) {
+
+					// If the button is scaled, shrink it
+					// Otherwise, grow it
+					instance._btn.style.transform = instance._scaled ? '' : `scale(${instance._settings.scale})`;
+
+					// Flip the scaled state
+					instance._scaled = !instance._scaled;
+
+				}
+
+				/**
+				 * Create an event listener
+				 * @param  {Node}        btn      The button to attach the listener to
+				 * @param  {Constructor} instance The current instantiation
+				 * @return {Function}             The callback function
+				 */
+				function createEventListener (btn, instance) {
+
+					/**
+					 * Handle click events
+					 */
+					function toggle () {
+						toggleBtn(instance);
+					}
+
+					// Listen for clicks on the button
+					btn.addEventListener('click', toggle);
+
+					return toggle;
+
+				}
+
+				/**
+				 * The constructor object
+				 * @param {String} selector The selector for the element to render into
+				 * @param {Object} options  User options and settings
+				 */
+				function Constructor (selector, options = {}) {
+
+					// Get the element
+					let elem = document.querySelector(selector);
+
+					// Create and freeze the settings object
+					let settings = Object.assign({}, defaults, options);
+					Object.freeze(settings);
+
+					// Inject a button into the DOM
+					let btn = createBtn(elem, settings);
+
+					// Create the event listener
+					let listener = createEventListener(btn, this);
+
+					// Set properties
+					Object.defineProperties(this, {
+						_elem: {value: elem},
+						_settings: {value: settings},
+						_btn: {value: btn},
+						_listener: {value: listener},
+						_scaled: {value: false, writable: true}
+					});
+
+				}
+
+				/**
+				 * Toggle the button
+				 */
+				Constructor.prototype.toggle = function () {
+					toggleBtn(this);
+				};
+
+				/**
+				 * Destroy this instance
+				 */
+				Constructor.prototype.destroy = function () {
+
+					// Remove the event listener
+					this._btn.removeEventListener('click', this._listener);
+
+					// Remove the button
+					this._btn.remove();
+
+				};
+
+				return Constructor;
+
+			})();
+
+			let egg = new Egg('#egg');
+
+			egg.destroy();
+		</script>
+	</body>
+</html>
