@@ -3,7 +3,7 @@
 
 	<head>
 		<meta charset="utf-8">
-		<title>Read-Only Properties</title>
+		<title>Underscore Prefix</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	</head>
 
@@ -25,17 +25,9 @@
 						units: 'pound'
 					}, options);
 
-					// Freeze settings so that they cannot be modified
-					Object.freeze(settings);
-
 					// Define instance properties
-					Object.defineProperties(this, {
-						weight: {
-							value: weight,
-							writable: true
-						},
-						_settings: {value: settings}
-					});
+					this.weight = weight;
+					this._settings = settings;
 
 				}
 
@@ -76,12 +68,9 @@
 
 			let current = new Weight(100);
 
-			// Try to break the script
+			// Replaces the settings object with a string
 			current._settings = 'Ruined your library';
-			current._settings.units = 'Ruined it again';
-
-			let notBroken = current.format();
-			console.log(notBroken);
+			console.log(current.format());
 		</script>
 	</body>
 </html>

@@ -3,7 +3,7 @@
 
 	<head>
 		<meta charset="utf-8">
-		<title>Instance properties can be overwritten</title>
+		<title>Read-Only Properties</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	</head>
 
@@ -25,9 +25,17 @@
 						units: 'pound'
 					}, options);
 
+					// Freeze settings so that they cannot be modified
+					Object.freeze(settings);
+
 					// Define instance properties
-					this.weight = weight;
-					this.settings = settings;
+					Object.defineProperties(this, {
+						weight: {
+							value: weight,
+							writable: true
+						},
+						_settings: {value: settings}
+					});
 
 				}
 
@@ -57,7 +65,7 @@
 				Constructor.prototype.format = function (units) {
 					return this.weight.toLocaleString(undefined, {
 						style: 'unit',
-						unit: units ? units : this.settings.units
+						unit: units ? units : this._settings.units
 					});
 				};
 
@@ -68,17 +76,11 @@
 
 			let current = new Weight(100);
 
-			console.log(current.weight);
-			console.log(current.settings);
+			// Try to break the script
+			current._settings = 'Ruined your library';
+			current._settings.units = 'Ruined it again';
 
-			// Replaces the current weight
-			current.weight = 800;
-			let formatted = current.format();
-			console.log(formatted);
-
-			// Replaces the settings object with a string
-			current.settings = 'Ruined your library';
-			let broken = current.format();
+			console.log(current.format());
 		</script>
 	</body>
 </html>

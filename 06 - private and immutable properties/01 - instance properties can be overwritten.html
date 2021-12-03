@@ -3,7 +3,7 @@
 
 	<head>
 		<meta charset="utf-8">
-		<title>Underscore Prefix</title>
+		<title>Instance properties can be overwritten</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	</head>
 
@@ -27,7 +27,7 @@
 
 					// Define instance properties
 					this.weight = weight;
-					this._settings = settings;
+					this.settings = settings;
 
 				}
 
@@ -57,7 +57,7 @@
 				Constructor.prototype.format = function (units) {
 					return this.weight.toLocaleString(undefined, {
 						style: 'unit',
-						unit: units ? units : this._settings.units
+						unit: units ? units : this.settings.units
 					});
 				};
 
@@ -68,10 +68,16 @@
 
 			let current = new Weight(100);
 
+			console.log(current.weight);
+			console.log(current.settings);
+
+			// Replaces the current weight
+			current.weight = 800;
+			console.log(current.format());
+
 			// Replaces the settings object with a string
-			// current._settings = 'Ruined your library';
-			let broken = current.format();
-			console.log(broken);
+			current.settings = 'Ruined your library';
+			console.log(current.format());
 		</script>
 	</body>
 </html>
