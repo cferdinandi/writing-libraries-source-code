@@ -3,7 +3,7 @@
 
 	<head>
 		<meta charset="utf-8">
-		<title>Adding Methods</title>
+		<title>Private variables won't work</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	</head>
 
@@ -13,15 +13,24 @@
 		<script>
 			let Weight = (function () {
 
-				// Default unit of weight
-				let defaultUnits = 'pound';
+				// Private properties
+				let weight, settings;
 
 				/**
 				 * The Constructor object
-				 * @param {Number} weight The starting weight
+				 * @param {Number} n       The starting weight
+				 * @param {Object} options Settings and options for this instance
 				 */
-				function Constructor (weight) {
-					this.weight = weight;
+				function Constructor (n, options = {}) {
+
+					// Combine user options and default settings
+					settings = Object.assign({
+						units: 'pound'
+					}, options);
+
+					// Define instance properties
+					weight = n;
+
 				}
 
 				/**
@@ -29,7 +38,8 @@
 				 * @param {Number} amount The amount to add
 				 */
 				Constructor.prototype.add = function (amount) {
-					this.weight = this.weight + amount;
+					weight = weight + amount;
+					return this;
 				};
 
 				/**
@@ -37,7 +47,8 @@
 				 * @param {Number} amount The amount to subtract
 				 */
 				Constructor.prototype.subtract = function (amount) {
-					this.weight = this.weight - amount;
+					weight = weight - amount;
+					return this;
 				};
 
 				/**
@@ -46,9 +57,9 @@
 				 * @return {String}        The formatted weight
 				 */
 				Constructor.prototype.format = function (units) {
-					return this.weight.toLocaleString(undefined, {
+					return weight.toLocaleString(undefined, {
 						style: 'unit',
-						unit: units ? units : defaultUnits
+						unit: units ? units : settings.units
 					});
 				};
 
@@ -58,11 +69,14 @@
 			})();
 
 			let current = new Weight(100);
-			current.add(5);
-			let formatted = current.format();
+			console.log(current.format());
 
-			console.log(current.weight);
-			console.log(formatted);
+			let old = new Weight(90, {
+				units: 'kilogram'
+			});
+
+			console.log(current.format());
+			console.log(old.format());
 		</script>
 	</body>
 </html>

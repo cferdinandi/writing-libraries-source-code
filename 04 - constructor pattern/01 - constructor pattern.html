@@ -11,31 +11,48 @@
 
 
 		<script>
-			let Greetings = (function () {
+			let Weight = (function () {
 
-				// Default greeting
-				let greeting = 'you';
+				// Default unit of weight
+				let defaultUnits = 'pound';
 
 				/**
 				 * The Constructor object
-				 * @param {String} name The name to use for the greeting
+				 * @param {Number} weight The starting weight
 				 */
-				function Constructor (name) {
-					this.name = name ? name : greeting;
+				function Constructor (weight) {
+					this.weight = weight;
 				}
 
 				/**
-				 * Say hello
+				 * Add an amount to a weight
+				 * @param {Number} weight The starting weight
+				 * @param {Number} amount The amount to add
 				 */
-				function sayHi (name) {
-					alert(`Hello, ${name ? name : greeting}!`);
+				function add (weight, amount) {
+					return weight + amount;
 				}
 
 				/**
-				 * Say goodbye
+				 * Subtract an amount from a weight
+				 * @param {Number} weight The starting weight
+				 * @param {Number} amount The amount to subtract
 				 */
-				function sayBye () {
-					alert(`Goodbye, ${name ? name : greeting}. See you soon!`);
+				function subtract (weight, amount) {
+					return weight - amount;
+				}
+
+				/**
+				 * Format a weight to a string
+				 * @param  {Number} weight The weight to format
+				 * @param  {String} units  The weight units to use
+				 * @return {String}        The formatted weight
+				 */
+				function format (weight, units) {
+					return weight.toLocaleString(undefined, {
+						style: 'unit',
+						unit: units ? units : defaultUnits
+					});
 				}
 
 				// Export the constructor object
@@ -43,14 +60,12 @@
 
 			})();
 
-			let merlin = new Greetings('Merlin');
-			let morgana = new Greetings('Morgana');
-			let nameless = new Greetings();
+			let current = new Weight(100);
+			let old = new Weight(90);
 
 			// Instance properties
-			console.log(merlin.name);
-			console.log(morgana.name);
-			console.log(nameless.name);
+			console.log(current.weight);
+			console.log(old.weight);
 		</script>
 	</body>
 </html>

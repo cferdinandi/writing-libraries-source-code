@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+		<title>Custom Events</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<style type="text/css">
+			body {
+				margin: 0 auto;
+				max-width: 30em;
+				width: 88%;
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<h1>Custom Events</h1>
+
+		<p>
+			<button data-add="5">Add 5</button>
+			<button data-add="10">Add 10</button>
+		</p>
+
+		<div id="app" aria-live="polite"></div>
+
+
+		<script>
+			let Weight = (function () {
+
+				/**
+				 * Emit a custom event
+				 * @param  {String} type   The event type
+				 * @param  {Object} detail Any details to pass along with the event
+				 * @param  {Node}   elem   The element to attach the event to
+				 */
+				function emitEvent (type, detail = {}, elem = document) {
+
+					// Make sure there's an event type
+					if (!type) return;
+
+					// Create a new event
+					let event = new CustomEvent(type, {
+						bubbles: true,
+						cancelable: true,
+						detail: detail
+					});
+
+					// Dispatch the event
+					return elem.dispatchEvent(event);
+
+				}
+
+				/**
+				 * The Constructor object
+				 * @param {Number} weight  The starting weight
+				 * @param {Object} options Settings and options for this instance
+				 */
+				function Constructor (weight, options = {}) {
+
+					// Combine user options and default settings
+					let settings = Object.assign({
+						units: 'pound'
+					}, options);
+
+					// Freeze settings so that they cannot be modified
+					Object.freeze(settings);
+
+					// Define instance properties
+					Object.defineProperties(this, {
+						weight: {value: weight},
+						_settings: {value: settings}
+					});
+
+				}
+
+				/**
+				 * Add an amount to a weight
+				 * @param {Number} amount The amount to add
+				 */
+				Constructor.prototype.add = function (amount) {
+
+					// Get updated weight
+					let weight = this.weight + amount;
+
+					// Emit custom event
+					emitEvent('weight:add', {
+						oldWeight: this.weight,
+						amount: amount,
+						weight: weight
+					});
+
+					return new Constructor(weight, this._settings);
+
+				};
+
+				/**
+				 * Subtract an amount from a weight
+				 * @param {Number} amount The amount to subtract
+				 */
+				Constructor.prototype.subtract = function (amount) {
+
+					// Get updated weight
+					let weight = this.weight - amount;
+
+					// Emit custom event
+					emitEvent('weight:subtract', {
+						oldWeight: this.weight,
+						amount: amount,
+						weight: weight
+					});
+
+					return new Constructor(weight, this._settings);
+
+				};
+
+				/**
+				 * Format a weight to a string
+				 * @param  {String} units  The weight units to use
+				 * @return {String}        The formatted weight
+				 */
+				Constructor.prototype.format = function (units) {
+					return this.weight.toLocaleString(undefined, {
+						style: 'unit',
+						unit: units ? units : this._settings.units
+					});
+				};
+
+				// Export the constructor object
+				return Constructor;
+
+			})();
+
+			let strength = new Weight(100);
+
+			document.addEventListener('weight:add', function (event) {
+				let app = document.querySelector('#app');
+				app.textContent = `You added ${event.detail.amount} lbs. The new weight is ${event.detail.weight}.`;
+			});
+
+			// Somewhere in the code base...
+			let add5 = document.querySelector('[data-add="5"]');
+			add5.addEventListener('click', function () {
+				strength = strength.add(5);
+			});
+
+			// Somewhere else in the code base...
+			let add10 = document.querySelector('[data-add="10"]');
+			add10.addEventListener('click', function () {
+				strength = strength.add(10);
+			});
+		</script>
+	</body>
+</html>

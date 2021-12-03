@@ -3,7 +3,7 @@
 
 	<head>
 		<meta charset="utf-8">
-		<title>Adding Methods</title>
+		<title>Underscore Prefix</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	</head>
 
@@ -13,15 +13,22 @@
 		<script>
 			let Weight = (function () {
 
-				// Default unit of weight
-				let defaultUnits = 'pound';
-
 				/**
 				 * The Constructor object
-				 * @param {Number} weight The starting weight
+				 * @param {Number} weight  The starting weight
+				 * @param {Object} options Settings and options for this instance
 				 */
-				function Constructor (weight) {
+				function Constructor (weight, options = {}) {
+
+					// Combine user options and default settings
+					let settings = Object.assign({
+						units: 'pound'
+					}, options);
+
+					// Define instance properties
 					this.weight = weight;
+					this._settings = settings;
+
 				}
 
 				/**
@@ -30,6 +37,7 @@
 				 */
 				Constructor.prototype.add = function (amount) {
 					this.weight = this.weight + amount;
+					return this;
 				};
 
 				/**
@@ -38,6 +46,7 @@
 				 */
 				Constructor.prototype.subtract = function (amount) {
 					this.weight = this.weight - amount;
+					return this;
 				};
 
 				/**
@@ -48,7 +57,7 @@
 				Constructor.prototype.format = function (units) {
 					return this.weight.toLocaleString(undefined, {
 						style: 'unit',
-						unit: units ? units : defaultUnits
+						unit: units ? units : this._settings.units
 					});
 				};
 
@@ -58,11 +67,10 @@
 			})();
 
 			let current = new Weight(100);
-			current.add(5);
-			let formatted = current.format();
 
-			console.log(current.weight);
-			console.log(formatted);
+			// Replaces the settings object with a string
+			current._settings = 'Ruined your library';
+			console.log(current.format());
 		</script>
 	</body>
 </html>

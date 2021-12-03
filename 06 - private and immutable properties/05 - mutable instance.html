@@ -3,7 +3,7 @@
 
 	<head>
 		<meta charset="utf-8">
-		<title>Adding Methods</title>
+		<title>Mutable Instances</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	</head>
 
@@ -13,15 +13,30 @@
 		<script>
 			let Weight = (function () {
 
-				// Default unit of weight
-				let defaultUnits = 'pound';
-
 				/**
 				 * The Constructor object
-				 * @param {Number} weight The starting weight
+				 * @param {Number} weight  The starting weight
+				 * @param {Object} options Settings and options for this instance
 				 */
-				function Constructor (weight) {
-					this.weight = weight;
+				function Constructor (weight, options = {}) {
+
+					// Combine user options and default settings
+					let settings = Object.assign({
+						units: 'pound'
+					}, options);
+
+					// Freeze settings so that they cannot be modified
+					Object.freeze(settings);
+
+					// Define instance properties
+					Object.defineProperties(this, {
+						weight: {
+							value: weight,
+							writable: true
+						},
+						_settings: {value: settings}
+					});
+
 				}
 
 				/**
@@ -30,6 +45,7 @@
 				 */
 				Constructor.prototype.add = function (amount) {
 					this.weight = this.weight + amount;
+					return this;
 				};
 
 				/**
@@ -38,6 +54,7 @@
 				 */
 				Constructor.prototype.subtract = function (amount) {
 					this.weight = this.weight - amount;
+					return this;
 				};
 
 				/**
@@ -48,7 +65,7 @@
 				Constructor.prototype.format = function (units) {
 					return this.weight.toLocaleString(undefined, {
 						style: 'unit',
-						unit: units ? units : defaultUnits
+						unit: units ? units : this._settings.units
 					});
 				};
 
@@ -57,12 +74,12 @@
 
 			})();
 
-			let current = new Weight(100);
-			current.add(5);
-			let formatted = current.format();
+			let monday = new Weight(100);
+			let wednesday = monday.add(10);
 
-			console.log(current.weight);
-			console.log(formatted);
+			// both log the same weight
+			console.log(monday.weight);
+			console.log(wednesday.weight);
 		</script>
 	</body>
 </html>

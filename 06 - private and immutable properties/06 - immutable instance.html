@@ -3,7 +3,7 @@
 
 	<head>
 		<meta charset="utf-8">
-		<title>Default Options</title>
+		<title>Immutable Instances</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	</head>
 
@@ -25,9 +25,14 @@
 						units: 'pound'
 					}, options);
 
+					// Freeze settings so that they cannot be modified
+					Object.freeze(settings);
+
 					// Define instance properties
-					this.weight = weight;
-					this.settings = settings;
+					Object.defineProperties(this, {
+						weight: {value: weight},
+						_settings: {value: settings}
+					});
 
 				}
 
@@ -36,8 +41,8 @@
 				 * @param {Number} amount The amount to add
 				 */
 				Constructor.prototype.add = function (amount) {
-					this.weight = this.weight + amount;
-					return this;
+					let weight = this.weight + amount;
+					return new Constructor(weight, this._settings);
 				};
 
 				/**
@@ -45,8 +50,8 @@
 				 * @param {Number} amount The amount to subtract
 				 */
 				Constructor.prototype.subtract = function (amount) {
-					this.weight = this.weight - amount;
-					return this;
+					let weight = this.weight - amount;
+					return new Constructor(weight, this._settings);
 				};
 
 				/**
@@ -57,7 +62,7 @@
 				Constructor.prototype.format = function (units) {
 					return this.weight.toLocaleString(undefined, {
 						style: 'unit',
-						unit: units ? units : this.settings.units
+						unit: units ? units : this._settings.units
 					});
 				};
 
@@ -66,15 +71,13 @@
 
 			})();
 
-			// Customize
-			let kg = new Weight(100, {
-				units: 'kilogram'
-			});
-			console.log(kg.format());
+			let monday = new Weight(100);
+			let wednesday = monday.add(10);
 
-			// Use defaults
-			let lbs = new Weight (100);
-			console.log(lbs.format());
+			// monday remains unchanged
+			// wednesday is a new instance
+			console.log(monday.weight);
+			console.log(wednesday.weight);
 		</script>
 	</body>
 </html>

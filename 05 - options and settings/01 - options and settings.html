@@ -11,35 +11,46 @@
 
 
 		<script>
-			let Greetings = (function () {
-
-				// Default greeting
-				let greeting = 'you';
+			let Weight = (function () {
 
 				/**
 				 * The Constructor object
-				 * @param {String} name     The name to use for the greeting
-				 * @param {Object} settings The settings and options for this instance
+				 * @param {Number} weight   The starting weight
+				 * @param {Object} settings Settings and options for this instance
 				 */
-				function Constructor (name, settings) {
-					this.name = name ? name : greeting;
+				function Constructor (weight, settings) {
+					this.weight = weight;
 					this.settings = settings;
 				}
 
 				/**
-				 * Say hello
+				 * Add an amount to a weight
+				 * @param {Number} amount The amount to add
 				 */
-				Constructor.prototype.sayHi = function () {
-					alert(`${this.settings.hiBefore}, ${this.name}! ${this.settings.hiAfter}`);
+				Constructor.prototype.add = function (amount) {
+					this.weight = this.weight + amount;
 					return this;
 				};
 
 				/**
-				 * Say goodbye
+				 * Subtract an amount from a weight
+				 * @param {Number} amount The amount to subtract
 				 */
-				Constructor.prototype.sayBye = function () {
-					alert(`${this.settings.byeBefore}, ${this.name}. ${this.settings.byeAfter}`);
+				Constructor.prototype.subtract = function (amount) {
+					this.weight = this.weight - amount;
 					return this;
+				};
+
+				/**
+				 * Format a weight to a string
+				 * @param  {String} units  The weight units to use
+				 * @return {String}        The formatted weight
+				 */
+				Constructor.prototype.format = function (units) {
+					return this.weight.toLocaleString(undefined, {
+						style: 'unit',
+						unit: units ? units : this.settings.units
+					});
 				};
 
 				// Export the constructor object
@@ -47,27 +58,18 @@
 
 			})();
 
-			let merlin = new Greetings('Merlin', {
-				hiBefore: 'Heyo',
-				hiAfter: '',
-				byeBefore: 'See ya later',
-				byeAfter: 'Take it easy.'
+			let kg = new Weight(100, {
+				units: 'kilogram'
 			});
+			console.log(kg.format());
 
-			// Merlin
-			merlin.sayHi();
-			merlin.sayBye();
-
-
-			// Incomplete settings
-			let morgana = new Greetings('Morgana', {
-				hiBefore: 'Hi there'
+			let oz = new Weight(100, {
+				units: 'ounce'
 			});
-			morgana.sayHi();
+			console.log(oz.format());
 
-			// No settings
-			let arthur = new Greetings('Arthur');
-			arthur.sayHi();
+			// let lbs = new Weight (100);
+			// console.log(lbs.format());
 		</script>
 	</body>
 </html>
