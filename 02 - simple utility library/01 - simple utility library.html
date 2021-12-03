@@ -11,28 +11,46 @@
 
 
 		<script>
-			let greetings = {
+			let weight = {
 
 				/**
-				 * Say hello
-				 * @param  {String} name The person's name
+				 * Add an amount to a weight
+				 * @param {Number} weight The starting weight
+				 * @param {Number} amount The amount to add
 				 */
-				sayHi: function (name) {
-					alert(`Hello, ${name}!`);
+				add: function (weight, amount) {
+					return weight + amount;
 				},
 
 				/**
-				 * Say goodbye
-				 * @param  {String} name The person's name
+				 * Subtract an amount from a weight
+				 * @param {Number} weight The starting weight
+				 * @param {Number} amount The amount to subtract
 				 */
-				sayBye: function (name) {
-					alert(`Goodbye, ${name}. See you soon!`);
+				subtract: function (weight, amount) {
+					return weight - amount;
+				},
+
+				/**
+				 * Format a weight to a string
+				 * @param  {Number} weight The weight to format
+				 * @param  {String} units  The weight units to use
+				 * @return {String}        The formatted weight
+				 */
+				format: function (weight, units) {
+					return weight.toLocaleString(undefined, {
+						style: 'unit',
+						unit: units
+					});
 				}
 
 			};
 
-			greetings.sayHi('Merlin');
-			greetings.sayBye('Morgana');
+			let current = 100;
+			let gotStronger = weight.add(current, 5);
+			let formatted = weight.format(gotStronger, 'pound');
+
+			console.log(gotStronger, formatted);
 		</script>
 	</body>
 </html>

@@ -11,36 +11,52 @@
 
 
 		<script>
-			let greetings = (function () {
+			let weight = (function () {
 
-				// Default greeting
-				let greeting = 'you';
+				// Default unit of weight
+				let defaultUnits = 'pound';
 
 				/**
-				 * Say hello
-				 * @param  {String} name The person's name
+				 * Add an amount to a weight
+				 * @param {Number} weight The starting weight
+				 * @param {Number} amount The amount to add
 				 */
-				function sayHi (name) {
-					alert(`Hello, ${name ? name : greeting}!`);
+				function add (weight, amount) {
+					return weight + amount;
 				}
 
 				/**
-				 * Say goodbye
-				 * @param  {String} name The person's name
+				 * Subtract an amount from a weight
+				 * @param {Number} weight The starting weight
+				 * @param {Number} amount The amount to subtract
 				 */
-				function sayBye (name) {
-					alert(`Goodbye, ${name ? name : greeting}. See you soon!`);
+				function subtract (weight, amount) {
+					return weight - amount;
+				}
+
+				/**
+				 * Format a weight to a string
+				 * @param  {Number} weight The weight to format
+				 * @param  {String} units  The weight units to use
+				 * @return {String}        The formatted weight
+				 */
+				function format (weight, units) {
+					return weight.toLocaleString(undefined, {
+						style: 'unit',
+						unit: units ? units : defaultUnits
+					});
 				}
 
 				// Export public methods
-				return {sayHi, sayBye};
+				return {add, subtract, format};
 
 			})();
 
-			greetings.sayHi('Merlin');
-			greetings.sayBye();
+			let current = 100;
+			let gotStronger = weight.add(current, 5);
+			let formatted = weight.format(gotStronger);
 
-			console.log(greetings.greeting);
+			console.log(gotStronger, formatted, weight.defaultUnits);
 		</script>
 	</body>
 </html>

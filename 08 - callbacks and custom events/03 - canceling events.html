@@ -5,9 +5,21 @@
 		<meta charset="utf-8">
 		<title>Canceling Events</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<style type="text/css">
+			body {
+				margin: 1em auto;
+				max-width: 40em;
+				max-width: 88%;
+			}
+		</style>
 	</head>
 
 	<body>
+
+		<h1>Canceling Events</h1>
+
+		<div id="app"></div>
 
 
 		<script>
@@ -31,8 +43,9 @@
 				// If cancelled, end the function
 				if (canceled) return;
 
-				// Otherwise, alert a message
-				alert('Hi there!');
+				// Otherwise, show a message
+				let app = document.querySelector('#app');
+				app.textContent = 'Hi there!';
 
 			}
 

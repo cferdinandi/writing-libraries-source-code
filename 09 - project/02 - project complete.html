@@ -13,11 +13,6 @@
 		<script>
 			let Bin = (function () {
 
-				// Default settings
-				let defaults = {
-					type: 'localStorage'
-				};
-
 				/**
 				 * Emit a custom event
 				 * @param  {String} type   The event type
@@ -49,7 +44,11 @@
 				function Constructor (key, options = {}) {
 
 					// Merge user options into defaults
-					let settings = Object.assign({}, defaults, options);
+					let settings = Object.assign({
+						type: 'localStorage'
+					}, options);
+
+					// Prevent the settings from being overwritten
 					Object.freeze(settings);
 
 					// Set properties
@@ -65,11 +64,16 @@
 				 * @param {*} value The storage value
 				 */
 				Constructor.prototype.set = function (value) {
+
+					// Update browser storage
 					window[this._settings.type].setItem(this._key, JSON.stringify(value));
+
+					// Emit a custom event
 					emitEvent('bin:set', {
 						key: this._key,
 						value: value
 					});
+
 				};
 
 				/**
@@ -77,22 +81,33 @@
 				 * @return {*} The storage value
 				 */
 				Constructor.prototype.get = function () {
+
+					// Update browser storage
 					let saved = JSON.parse(window[this._settings.type].getItem(this._key));
+
+					// Emit a custom event
 					emitEvent('bin:get', {
 						key: this._key,
 						value: saved
 					});
+
 					return saved;
+
 				};
 
 				/**
 				 * Remove a browser storage item
 				 */
 				Constructor.prototype.remove = function () {
+
+					// Emit a custom event
 					window[this._settings.type].removeItem(this._key);
+
+					// Emit a custom event
 					emitEvent('bin:remove', {
 						key: this._key
 					});
+
 				};
 
 				return Constructor;
@@ -123,7 +138,7 @@
 
 			// get the item value
 			let merlin = wizard.get();
-			console.log(gandalf);
+			console.log(merlin);
 		</script>
 	</body>
 </html>

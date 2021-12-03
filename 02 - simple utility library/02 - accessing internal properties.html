@@ -11,31 +11,49 @@
 
 
 		<script>
-			let greetings = {
+			let weight = {
 
-				// Default greeting
-				greeting: 'you',
+				// Default unit of weight
+				defaultUnits: 'pound',
 
 				/**
-				 * Say hello
-				 * @param  {String} name The person's name
+				 * Add an amount to a weight
+				 * @param {Number} weight The starting weight
+				 * @param {Number} amount The amount to add
 				 */
-				sayHi: function (name) {
-					alert(`Hello, ${name ? name : this.greeting}!`);
+				add: function (weight, amount) {
+					return weight + amount;
 				},
 
 				/**
-				 * Say goodbye
-				 * @param  {String} name The person's name
+				 * Subtract an amount from a weight
+				 * @param {Number} weight The starting weight
+				 * @param {Number} amount The amount to subtract
 				 */
-				sayBye: function (name) {
-					alert(`Goodbye, ${name ? name : this.greeting}. See you soon!`);
+				subtract: function (weight, amount) {
+					return weight - amount;
+				},
+
+				/**
+				 * Format a weight to a string
+				 * @param  {Number} weight The weight to format
+				 * @param  {String} units  The weight units to use
+				 * @return {String}        The formatted weight
+				 */
+				format: function (weight, units) {
+					return weight.toLocaleString(undefined, {
+						style: 'unit',
+						unit: units ? units : this.defaultUnits
+					});
 				}
 
 			};
 
-			greetings.sayHi();
-			greetings.sayHi('Merlin');
+
+			let formatToKg = weight.format(100, 'kilogram');
+			let formatToLb = weight.format(100);
+
+			console.log(formatToKg, formatToLb);
 		</script>
 	</body>
 </html>

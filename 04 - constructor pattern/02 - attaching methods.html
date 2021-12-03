@@ -11,31 +11,45 @@
 
 
 		<script>
-			let Greetings = (function () {
+			let Weight = (function () {
 
-				// Default greeting
-				let greeting = 'you';
+				// Default unit of weight
+				let defaultUnits = 'pound';
 
 				/**
 				 * The Constructor object
-				 * @param {String} name The name to use for the greeting
+				 * @param {Number} weight The starting weight
 				 */
-				function Constructor (name) {
-					this.name = name ? name : greeting;
+				function Constructor (weight) {
+					this.weight = weight;
 				}
 
 				/**
-				 * Say hello
+				 * Add an amount to a weight
+				 * @param {Number} amount The amount to add
 				 */
-				Constructor.prototype.sayHi = function () {
-					alert(`Hello, ${this.name}!`);
+				Constructor.prototype.add = function (amount) {
+					this.weight = this.weight + amount;
 				};
 
 				/**
-				 * Say goodbye
+				 * Subtract an amount from a weight
+				 * @param {Number} amount The amount to subtract
 				 */
-				Constructor.prototype.sayBye = function () {
-					alert(`Goodbye, ${this.name}. See you soon!`);
+				Constructor.prototype.subtract = function (amount) {
+					this.weight = this.weight - amount;
+				};
+
+				/**
+				 * Format a weight to a string
+				 * @param  {String} units  The weight units to use
+				 * @return {String}        The formatted weight
+				 */
+				Constructor.prototype.format = function (units) {
+					return this.weight.toLocaleString(undefined, {
+						style: 'unit',
+						unit: units ? units : defaultUnits
+					});
 				};
 
 				// Export the constructor object
@@ -43,8 +57,11 @@
 
 			})();
 
-			let merlin = new Greetings('Merlin');
-			merlin.sayHi();
+			let current = new Weight(100);
+			current.add(5);
+			let formatted = current.format();
+
+			console.log(current.weight, formatted);
 		</script>
 	</body>
 </html>

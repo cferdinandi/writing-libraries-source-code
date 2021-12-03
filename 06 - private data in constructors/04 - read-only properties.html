@@ -11,53 +11,62 @@
 
 
 		<script>
-			let Greetings = (function () {
-
-				// Default settings
-				let defaults = {
-					greeting: 'you',
-					hiBefore: 'Hello',
-					hiAfter: '',
-					byeBefore: 'Goodbye',
-					byeAfter: 'See you soon!'
-				};
+			let Weight = (function () {
 
 				/**
 				 * The Constructor object
-				 * @param {String} name    The name to use for the greeting
-				 * @param {Object} options The settings and options for this instance
+				 * @param {Number} weight  The starting weight
+				 * @param {Object} options Settings and options for this instance
 				 */
-				function Constructor (name, options = {}) {
+				function Constructor (weight, options = {}) {
 
-					// Merge user options into defaults
-					let settings = Object.assign({}, defaults, options);
+					// Combine user options and default settings
+					let settings = Object.assign({
+						units: 'pound'
+					}, options);
 
 					// Freeze settings so that they cannot be modified
 					Object.freeze(settings);
 
-					// Set properties
+					// Define instance properties
 					Object.defineProperties(this, {
-						_name: {value: name},
-						_settings: {value: settings},
-						overWritableProp: {value: 'some value', writable: true}
+						weight: {
+							value: weight,
+							writable: true
+						},
+						_settings: {value: settings}
 					});
 
 				}
 
 				/**
-				 * Say hello
+				 * Add an amount to a weight
+				 * @param {Number} amount The amount to add
 				 */
-				Constructor.prototype.sayHi = function () {
-					alert(`${this._settings.hiBefore}, ${this._name}! ${this._settings.hiAfter}`);
+				Constructor.prototype.add = function (amount) {
+					this.weight = this.weight + amount;
 					return this;
 				};
 
 				/**
-				 * Say goodbye
+				 * Subtract an amount from a weight
+				 * @param {Number} amount The amount to subtract
 				 */
-				Constructor.prototype.sayBye = function () {
-					alert(`${this._settings.byeBefore}, ${this._name}. ${this._settings.byeAfter}`);
+				Constructor.prototype.subtract = function (amount) {
+					this.weight = this.weight - amount;
 					return this;
+				};
+
+				/**
+				 * Format a weight to a string
+				 * @param  {String} units  The weight units to use
+				 * @return {String}        The formatted weight
+				 */
+				Constructor.prototype.format = function (units) {
+					return this.weight.toLocaleString(undefined, {
+						style: 'unit',
+						unit: units ? units : this._settings.units
+					});
 				};
 
 				// Export the constructor object
@@ -65,19 +74,14 @@
 
 			})();
 
-			let merlin = new Greetings('Merlin');
+			let current = new Weight(100);
 
-			// Try to update the _name property
-			merlin._name = 'Morgana';
-			merlin.sayHi();
+			// Try to break the script
+			current._settings = 'Ruined your library';
+			current._settings.units = 'Ruined it again';
 
-			// Try to overwrite the _settings property
-			merlin._settings = 'Broke your library';
-			merlin.sayHi();
-
-			// Try to update a property in the _settings object
-			merlin._settings.hiBefore = 'Heyo';
-			merlin.sayHi();
+			let notBroken = current.format();
+			console.log(notBroken);
 		</script>
 	</body>
 </html>

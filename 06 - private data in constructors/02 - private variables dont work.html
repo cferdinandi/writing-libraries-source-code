@@ -11,44 +11,56 @@
 
 
 		<script>
-			let Greetings = (function () {
+			let Weight = (function () {
 
-				// Default settings
-				let defaults = {
-					greeting: 'you',
-					hiBefore: 'Hello',
-					hiAfter: '',
-					byeBefore: 'Goodbye',
-					byeAfter: 'See you soon!'
-				};
-
-				// Hold the name and settings data
-				let name, settings;
+				// Private properties
+				let weight, settings;
 
 				/**
 				 * The Constructor object
-				 * @param {String} name    The name to use for the greeting
-				 * @param {Object} options The settings and options for this instance
+				 * @param {Number} n       The starting weight
+				 * @param {Object} options Settings and options for this instance
 				 */
-				function Constructor (nameStr, options = {}) {
-					settings = Object.assign({}, defaults, options);
-					name = nameStr ? nameStr : settings.greeting;
+				function Constructor (n, options = {}) {
+
+					// Combine user options and default settings
+					settings = Object.assign({
+						units: 'pound'
+					}, options);
+
+					// Define instance properties
+					weight = n;
+
 				}
 
 				/**
-				 * Say hello
+				 * Add an amount to a weight
+				 * @param {Number} amount The amount to add
 				 */
-				Constructor.prototype.sayHi = function () {
-					alert(`${settings.hiBefore}, ${name}! ${settings.hiAfter}`);
+				Constructor.prototype.add = function (amount) {
+					weight = weight + amount;
 					return this;
 				};
 
 				/**
-				 * Say goodbye
+				 * Subtract an amount from a weight
+				 * @param {Number} amount The amount to subtract
 				 */
-				Constructor.prototype.sayBye = function () {
-					alert(`${settings.byeBefore}, ${name}. ${settings.byeAfter}`);
+				Constructor.prototype.subtract = function (amount) {
+					weight = weight - amount;
 					return this;
+				};
+
+				/**
+				 * Format a weight to a string
+				 * @param  {String} units  The weight units to use
+				 * @return {String}        The formatted weight
+				 */
+				Constructor.prototype.format = function (units) {
+					return weight.toLocaleString(undefined, {
+						style: 'unit',
+						unit: units ? units : settings.units
+					});
 				};
 
 				// Export the constructor object
@@ -56,16 +68,15 @@
 
 			})();
 
-			let merlin = new Greetings('Merlin');
-			// merlin.sayHi();
+			let current = new Weight(100);
+			console.log(current.format());
 
-
-			let morgana = new Greetings('Morgana', {
-				hiBefore: 'Heyo'
+			let old = new Weight(90, {
+				units: 'kilogram'
 			});
 
-			morgana.sayHi();
-			merlin.sayHi();
+			console.log(current.format());
+			console.log(old.format());
 		</script>
 	</body>
 </html>
