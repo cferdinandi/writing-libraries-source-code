@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+		<title>Options and Settings</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	</head>
+
+	<body>
+
+
+		<script>
+			let Calculator = (function () {
+
+				/**
+				 * Create the Constructor object
+				 * @param {Number} num The starting total
+				 */
+				function Constructor (num = 0, options = {}) {
+
+					// Combine user options with defaults
+					let {max, min} = Object.assign({
+						max: Infinity,
+						min: -Infinity
+					}, options);
+
+					// Define properties
+					this.total = num;
+					this.max = max;
+					this.min = min;
+
+				}
+
+				/**
+				 * Validate total before setting it
+				 * @param  {Object} min The constructor instance to validate
+				 */
+				function validate (instance) {
+
+					// Avoid infinite loops
+					if (instance.min > instance.max) return;
+
+					// If below the minimum
+					if (instance.total < instance.min) {
+						instance.total = instance.min;
+					}
+
+					// If above the total
+					if (instance.total > instance.max) {
+						instance.total = instance.max;
+					}
+
+				}
+
+				/**
+				 * Add two or more numbers together
+				 * @param {...Number} nums The numbers to add
+				 */
+				Constructor.prototype.add = function (...nums) {
+
+					// Loop through each number and do math
+					for (let num of nums) {
+						this.total = this.total + num;
+					}
+
+					// Validate the total
+					validate(this);
+
+					// Return the instance
+					return this;
+
+				};
+
+				/**
+				 * Subtract two or more numbers from each other
+				 * @param {...Number} nums The numbers to subtract
+				 */
+				Constructor.prototype.subtract = function (...nums) {
+
+					// Loop through each number and do math
+					for (let num of nums) {
+						this.total = this.total - num;
+					}
+
+					// Validate the total
+					validate(this);
+
+					// Return the instance
+					return this;
+
+				};
+
+				/**
+				 * Multiply two or more numbers
+				 * @param {...Number} nums The numbers to multiply
+				 */
+				Constructor.prototype.multiply = function (...nums) {
+
+					// Loop through each number and do math
+					for (let num of nums) {
+						this.total = this.total * num;
+					}
+
+					// Validate the total
+					validate(this);
+
+					// Return the instance
+					return this;
+
+				};
+
+				/**
+				 * Divide two or more numbers
+				 * @param {...Number} nums The numbers to divide
+				 */
+				Constructor.prototype.divide = function (...nums) {
+
+					// Loop through each number and do math
+					for (let num of nums) {
+						this.total = this.total / num;
+					}
+
+					// Validate the total
+					validate(this);
+
+					// Return the instance
+					return this;
+
+				};
+
+				/**
+				 * Generate a random whole number
+				 * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
+				 * @return {Number} A random number
+				 */
+				Constructor.random = function (max = 100) {
+					return Math.floor(Math.random() * max);
+				};
+
+				return Constructor;
+
+			})();
+
+			// Create a new instance
+			let age = new Calculator(30, {
+				max: 50
+			});
+
+			// Break things!
+			age.max = 'Hello!';
+
+			// Do some math
+			age.add(1, 2, 3).multiply(2);
+			console.log(age.total);
+		</script>
+	</body>
+</html>

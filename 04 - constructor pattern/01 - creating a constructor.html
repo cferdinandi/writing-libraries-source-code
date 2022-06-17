@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+		<title>Creating a constructor pattern</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	</head>
+
+	<body>
+
+
+		<script>
+			let Calculator = (function () {
+
+				/**
+				 * Create the Constructor object
+				 * @param {Number} num The starting total
+				 */
+				function Constructor (num = 0) {
+					this.total = num;
+				}
+
+				return Constructor;
+
+			})();
+
+			// Create a new instance
+			let age = new Calculator(30);
+			let weight = new Calculator(175);
+			let startAtZero = new Calculator();
+
+			console.log(age.total);
+			console.log(weight.total);
+			console.log(startAtZero.total);
+		</script>
+	</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+		<title>Collection of helper functions</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	</head>
+
+	<body>
+
+
+		<script>
+			let Calculator = (function () {
+
+				/**
+				 * Create the Constructor object
+				 * @param {Number} num The starting total
+				 */
+				function Constructor (num = 0) {
+					this.total = num;
+				}
+
+				/**
+				 * Add two or more numbers together
+				 * @param {...Number} nums The numbers to add
+				 */
+				Constructor.prototype.add = function (...nums) {
+
+					// Loop through each number and do math
+					for (let num of nums) {
+						this.total = this.total + num;
+					}
+
+					// Return the total
+					return this.total;
+
+				};
+
+				/**
+				 * Subtract two or more numbers from each other
+				 * @param {...Number} nums The numbers to subtract
+				 */
+				Constructor.prototype.subtract = function (...nums) {
+
+					// Loop through each number and do math
+					for (let num of nums) {
+						this.total = this.total - num;
+					}
+
+					// Return the total
+					return this.total;
+
+				};
+
+				/**
+				 * Multiply two or more numbers
+				 * @param {...Number} nums The numbers to multiply
+				 */
+				Constructor.prototype.multiply = function (...nums) {
+
+					// Loop through each number and do math
+					for (let num of nums) {
+						this.total = this.total * num;
+					}
+
+					// Return the total
+					return this.total;
+
+				};
+
+				/**
+				 * Divide two or more numbers
+				 * @param {...Number} nums The numbers to divide
+				 */
+				Constructor.prototype.divide = function (...nums) {
+
+					// Loop through each number and do math
+					for (let num of nums) {
+						this.total = this.total / num;
+					}
+
+					// Return the total
+					return this.total;
+
+				};
+
+				return Constructor;
+
+			})();
+
+			// Create a new instance
+			let age = new Calculator(30);
+			console.log(age.total);
+
+			// Do some math
+			age.add(1, 2, 3);
+			console.log(age.total);
+
+			// Do more math
+			age.multiply(2);
+			console.log(age.total);
+		</script>
+	</body>
+</html>

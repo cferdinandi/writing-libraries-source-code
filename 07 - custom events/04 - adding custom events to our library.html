@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+		<title>Collection of helper functions</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	</head>
+
+	<body>
+
+
+		<script>
+			class Calculator {
+
+				/**
+				 * Create the Constructor object
+				 * @param {Number} num     The starting total
+				 * @param {Object} options Options and settings
+				 */
+				constructor (num = 0, options = {}) {
+
+					// Combine user options with defaults
+					let {max, min} = Object.assign({
+						max: Infinity,
+						min: -Infinity
+					}, options);
+
+					// Define properties
+					Object.defineProperties(this, {
+						total: {
+							value: num,
+							writable: true
+						},
+						_max: {value: max},
+						_min: {value: min}
+					});
+
+				}
+
+				/**
+				 * Validate total before setting it
+				 */
+				#validate () {
+
+					// Avoid infinite loops
+					if (this._min > this._max) return;
+
+					// If below the minimum
+					if (this.total < this._min) {
+						this.total = this._min;
+					}
+
+					// If above the total
+					if (this.total > this._max) {
+						this.total = this._max;
+					}
+
+				}
+
+				/**
+				 * Emit a custom event
+				 * @param  {String} type   The event type
+				 * @param  {*}      detail Any details to pass along with the event
+				 */
+				#emit (type, detail) {
+
+					// Create a new event
+					let event = new CustomEvent(type, {
+						bubbles: true,
+						cancelable: true,
+						detail: detail
+					});
+
+					// Dispatch the event
+					return document.dispatchEvent(event);
+
+				}
+
+				/**
+				 * Add two or more numbers together
+				 * @param {...Number} nums The numbers to add
+				 */
+				add (...nums) {
+
+					// Get the starting total
+					let start = this.total;
+
+					// Loop through each number and do math
+					for (let num of nums) {
+						this.total = this.total + num;
+					}
+
+					// Validate the total
+					this.#validate();
+
+					// Emit a custom event
+					this.#emit('calculator:add', {total: this.total, start, nums});
+
+					// Return the instance
+					return this;
+
+				}
+
+				/**
+				 * Subtract two or more numbers from each other
+				 * @param {...Number} nums The numbers to subtract
+				 */
+				subtract (...nums) {
+
+					// Get the starting total
+					let start = this.total;
+
+					// Loop through each number and do math
+					for (let num of nums) {
+						this.total = this.total - num;
+					}
+
+					// Validate the total
+					this.#validate();
+
+					// Emit a custom event
+					this.#emit('calculator:subtract', {total: this.total, start, nums});
+
+					// Return the instance
+					return this;
+
+				}
+
+				/**
+				 * Multiply two or more numbers
+				 * @param {...Number} nums The numbers to multiply
+				 */
+				multiply (...nums) {
+
+					// Get the starting total
+					let start = this.total;
+
+					// Loop through each number and do math
+					for (let num of nums) {
+						this.total = this.total * num;
+					}
+
+					// Validate the total
+					this.#validate();
+
+					// Emit a custom event
+					this.#emit('calculator:multiply', {total: this.total, start, nums});
+
+					// Return the instance
+					return this;
+
+				}
+
+				/**
+				 * Divide two or more numbers
+				 * @param {...Number} nums The numbers to divide
+				 */
+				divide (...nums) {
+
+					// Get the starting total
+					let start = this.total;
+
+					// Loop through each number and do math
+					for (let num of nums) {
+						this.total = this.total / num;
+					}
+
+					// Validate the total
+					this.#validate();
+
+					// Emit a custom event
+					this.#emit('calculator:divide', {total: this.total, nums});
+
+					// Return the instance
+					return this;
+
+				}
+
+				/**
+				 * Generate a random whole number
+				 * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
+				 * @return {Number} A random number
+				 */
+				static random (max = 100) {
+					return Math.floor(Math.random() * max);
+				}
+
+			}
+
+			// Create a new instance
+			let age = new Calculator(30);
+
+			/**
+			 * Log event details
+			 * @param  {Event} event The event object
+			 */
+			function log (event) {
+				console.log(event.type, event.detail);
+				if (event.detail.total > 50) {
+					console.log('Hooray!');
+				}
+			}
+
+			// Listen for calculator events
+			document.addEventListener('calculator:add', log);
+			document.addEventListener('calculator:multiply', log);
+
+			// Do some math
+			age.add(1, 2, 3).multiply(2);
+		</script>
+	</body>
+</html>

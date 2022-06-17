@@ -3,7 +3,7 @@
 
 	<head>
 		<meta charset="utf-8">
-		<title>Revealing Module Pattern</title>
+		<title>Private variables and functions</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	</head>
 
@@ -14,16 +14,28 @@
 			let calculator = (function () {
 
 				/**
-				 * Add two or more numbers together
-				 * @param {...Number} nums The numbers to add
+				 * Get the starting total
+				 * @param  {Array} nums The numbers to do math on
+				 * @return {Number}     The starting total
 				 */
-				function add (...nums) {
+				function getTotal (nums) {
 
 					// Make sure there are numbers
 					if (!nums.length) return 0;
 
 					// Get the first number and remove it from the array
-					let total = nums.shift();
+					return nums.shift();
+
+				}
+
+				/**
+				 * Add two or more numbers together
+				 * @param {...Number} nums The numbers to add
+				 */
+				function add (...nums) {
+
+					// Get the first number and remove it from the array
+					let total = getTotal(nums);
 
 					// Loop through each number and do math
 					for (let num of nums) {
@@ -41,11 +53,8 @@
 				 */
 				function subtract (...nums) {
 
-					// Make sure there are numbers
-					if (!nums.length) return 0;
-
 					// Get the first number and remove it from the array
-					let total = nums.shift();
+					let total = getTotal(nums);
 
 					// Loop through each number and do math
 					for (let num of nums) {
@@ -63,11 +72,8 @@
 				 */
 				function multiply (...nums) {
 
-					// Make sure there are numbers
-					if (!nums.length) return 0;
-
 					// Get the first number and remove it from the array
-					let total = nums.shift();
+					let total = getTotal(nums);
 
 					// Loop through each number and do math
 					for (let num of nums) {
@@ -85,11 +91,8 @@
 				 */
 				function divide (...nums) {
 
-					// Make sure there are numbers
-					if (!nums.length) return 0;
-
 					// Get the first number and remove it from the array
-					let total = nums.shift();
+					let total = getTotal(nums);
 
 					// Loop through each number and do math
 					for (let num of nums) {
@@ -102,16 +105,13 @@
 				}
 
 				// Return public functions
+				// Because we don't return getTotal(), it can only be used internally
 				return {add, subtract, multiply, divide};
 
 			})();
 
-			let added = calculator.add(1, 2, 3);
-			let subtracted = calculator.subtract(10, 1, 1);
-			let multiplied = calculator.multiply(5, 2, 2);
-			let divided = calculator.divide(10, 2, 2);
-
-			console.log(added, subtracted, multiplied, divided);
+			let added = calculator.add();
+			console.log(added);
 		</script>
 	</body>
 </html>

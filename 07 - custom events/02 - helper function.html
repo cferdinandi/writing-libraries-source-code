@@ -3,7 +3,7 @@
 
 	<head>
 		<meta charset="utf-8">
-		<title>emitEvent() helper function</title>
+		<title>A custom event helper function</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 		<style type="text/css">
@@ -17,20 +17,14 @@
 
 	<body>
 
-		<div id="app">A placeholder element.</div>
-
 
 		<script>
 			/**
 			 * Emit a custom event
 			 * @param  {String} type   The event type
-			 * @param  {Object} detail Any details to pass along with the event
-			 * @param  {Node}   elem   The element to attach the event to
+			 * @param  {*}      detail Any details to pass along with the event
 			 */
-			function emitEvent (type, detail = {}, elem = document) {
-
-				// Make sure there's an event type
-				if (!type) return;
+			function emit (type, detail) {
 
 				// Create a new event
 				let event = new CustomEvent(type, {
@@ -40,7 +34,7 @@
 				});
 
 				// Dispatch the event
-				return elem.dispatchEvent(event);
+				return document.dispatchEvent(event);
 
 			}
 
@@ -49,21 +43,13 @@
 				console.log(event);
 			});
 
-
 			// Emit a custom event
-			emitEvent('my-custom-event');
+			emit('my-custom-event');
 
 			// Emit a custom event with details
-			emitEvent('my-custom-event', {
+			emit('my-custom-event', {
 				name: 'Merlin'
 			});
-
-			// Emit a custom event on a specific element
-			let app = document.querySelector('#app');
-			emitEvent('my-custom-event', null, app);
-
-			// Check if the event was canceled
-			let canceled = !emitEvent('my-custom-event');
 		</script>
 	</body>
 </html>

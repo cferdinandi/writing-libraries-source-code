@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+		<title>Collection of helper functions</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	</head>
+
+	<body>
+
+
+		<script>
+			/**
+			 * Add two or more numbers together
+			 * @param {...Number} nums The numbers to add
+			 */
+			function add (...nums) {
+
+				// Make sure there are numbers
+				if (!nums.length) return 0;
+
+				// Get the first number and remove it from the array
+				let total = nums.shift();
+
+				// Loop through each number and do math
+				for (let num of nums) {
+					total = total + num;
+				}
+
+				// Return the total
+				return total;
+
+			}
+
+			/**
+			 * Subtract two or more numbers from each other
+			 * @param {...Number} nums The numbers to subtract
+			 */
+			function subtract (...nums) {
+
+				// Make sure there are numbers
+				if (!nums.length) return 0;
+
+				// Get the first number and remove it from the array
+				let total = nums.shift();
+
+				// Loop through each number and do math
+				for (let num of nums) {
+					total = total - num;
+				}
+
+				// Return the total
+				return total;
+
+			}
+
+			/**
+			 * Multiply two or more numbers
+			 * @param {...Number} nums The numbers to multiply
+			 */
+			function multiply (...nums) {
+
+				// Make sure there are numbers
+				if (!nums.length) return 0;
+
+				// Get the first number and remove it from the array
+				let total = nums.shift();
+
+				// Loop through each number and do math
+				for (let num of nums) {
+					total = total * num;
+				}
+
+				// Return the total
+				return total;
+
+			}
+
+			/**
+			 * Divide two or more numbers
+			 * @param {...Number} nums The numbers to divide
+			 */
+			function divide (...nums) {
+
+				// Make sure there are numbers
+				if (!nums.length) return 0;
+
+				// Get the first number and remove it from the array
+				let total = nums.shift();
+
+				// Loop through each number and do math
+				for (let num of nums) {
+					total = total / num;
+				}
+
+				// Return the total
+				return total;
+
+			}
+
+			let added = add(1, 2, 3);
+			let subtracted = subtract(10, 1, 1);
+			let multiplied = multiply(5, 2, 2);
+			let divided = divide(10, 2, 2);
+
+			console.log(added, subtracted, multiplied, divided);
+		</script>
+	</body>
+</html>

@@ -13,13 +13,9 @@
 			/**
 			 * Emit a custom event
 			 * @param  {String} type   The event type
-			 * @param  {Object} detail Any details to pass along with the event
-			 * @param  {Node}   elem   The element to attach the event to
+			 * @param  {*}      detail Any details to pass along with the event
 			 */
-			function emitEvent (type, detail = {}, elem = document) {
-
-				// Make sure there's an event type
-				if (!type) return;
+			function emit (type, detail) {
 
 				// Create a new event
 				let event = new CustomEvent(type, {
@@ -29,20 +25,20 @@
 				});
 
 				// Dispatch the event
-				return elem.dispatchEvent(event);
+				return document.dispatchEvent(event);
 
 			}
 
 
 			// kebab-case naming
-			emitEvent('greetings-before-hi');
+			emit('calculator-add');
 
 			// prefix-kebab naming
-			emitEvent('greetings:before-hi');
+			emit('calculator:add');
 
 			// camelCase
 			// AVOID THIS
-			emitEvent('greetingsBeforeHi');
+			emit('calculatorAdd');
 		</script>
 	</body>
 </html>
